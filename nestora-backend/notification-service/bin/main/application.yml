@@ -1,0 +1,14 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: notification-service
+  r2dbc:
+    url: r2dbc:h2:file:./db/notification_db;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password: password
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql

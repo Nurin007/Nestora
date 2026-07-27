@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Nestora</string>
+    <string name="title_activity_main">Nestora</string>
+    <string name="package_name">com.nestora.app</string>
+    <string name="custom_url_scheme">com.nestora.app</string>
+</resources>

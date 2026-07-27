@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS bookings (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    property_id BIGINT NOT NULL,
+    buyer_id BIGINT NOT NULL,
+    visit_date DATE NOT NULL,
+    visit_time_slot VARCHAR(50) NOT NULL, -- e.g., "10:00-12:00"
+    status VARCHAR(50) NOT NULL DEFAULT 'PENDING', -- PENDING, CONFIRMED, RESCHEDULED, CANCELLED
+    remarks TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS booking_history (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    booking_id BIGINT NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    update_reason TEXT,
+    updated_by BIGINT NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+);

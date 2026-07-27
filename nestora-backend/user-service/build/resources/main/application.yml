@@ -1,0 +1,17 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-service
+  r2dbc:
+    url: r2dbc:h2:file:./db/user_db;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password: password
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+  security:
+    user:
+      password: userPass
