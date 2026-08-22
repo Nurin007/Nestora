@@ -258,15 +258,10 @@ export default function PropertyDetails({ user, properties, bookings, setBooking
       </button>
 
       {/* Main Grid: Images & Details */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '7fr 5fr',
-        gap: '40px',
-        alignItems: 'start'
-      }}>
+      <div className="property-details-layout" style={{ alignItems: 'start' }}>
         
         {/* Left Side: Media Gallery, Desc, Map, Reviews */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
           
           {/* Gallery Component */}
           <div className="glass" style={{ padding: '16px', borderRadius: '24px' }}>

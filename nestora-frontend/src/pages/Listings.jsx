@@ -173,8 +173,8 @@ export default function Listings({ properties, wishlist, onToggleWishlist, compa
       </div>
 
       {/* ── Body: Sidebar + Results ── */}
-      <div className="container" style={{ marginTop: '32px' }}>
-        <div style={{ display: 'flex', gap: '28px', alignItems: 'flex-start' }}>
+      <div className="container" style={{ marginTop: '24px' }}>
+        <div className="listings-layout-wrapper">
 
           {/* ── Sidebar ── */}
           {showFilters && (

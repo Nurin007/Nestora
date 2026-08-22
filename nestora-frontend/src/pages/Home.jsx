@@ -43,16 +43,16 @@ export default function Home({ properties, wishlist, onToggleWishlist, compareLi
       {/* Hero Section */}
       <section style={{
         textAlign: 'center',
-        padding: '80px 0 60px 0',
+        padding: '50px 0 40px 0',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
       }}>
         <h1 style={{
-          fontSize: '3.5rem',
+          fontSize: 'clamp(2.1rem, 6vw, 3.5rem)',
           lineHeight: '1.2',
           letterSpacing: '-1px',
-          marginBottom: '20px',
+          marginBottom: '16px',
           maxWidth: '800px',
           background: 'linear-gradient(to right, #ffffff, var(--primary), #ffffff)',
           WebkitBackgroundClip: 'text',
@@ -62,24 +62,20 @@ export default function Home({ properties, wishlist, onToggleWishlist, compareLi
         </h1>
         <p style={{
           color: 'var(--text-muted)',
-          fontSize: '1.15rem',
+          fontSize: 'clamp(0.95rem, 2.5vw, 1.15rem)',
           maxWidth: '600px',
-          marginBottom: '48px',
+          marginBottom: '36px',
           lineHeight: '1.6'
         }}>
           Connect with verified property owners, view locations, inspect properties securely, and book slots in Bangladesh.
         </p>
 
         {/* Floating Glass Search Panel */}
-        <div className="glass" style={{
+        <div className="glass hero-search-grid" style={{
           width: '100%',
           maxWidth: '900px',
-          padding: '24px',
-          borderRadius: '24px',
-          display: 'grid',
-          gridTemplateColumns: '2fr 1fr 1fr 1fr auto',
-          gap: '16px',
-          alignItems: 'center',
+          padding: '20px',
+          borderRadius: '20px',
           boxShadow: 'var(--shadow-lg)'
         }}>
           {/* Main search bar */}
@@ -132,37 +128,35 @@ export default function Home({ properties, wishlist, onToggleWishlist, compareLi
             onChange={(e) => setPriceMax(e.target.value)}
           />
 
-          <button className="btn btn-primary" style={{ padding: '12px 24px' }}>
+          <button className="btn btn-primary" style={{ padding: '12px 24px', height: '48px' }}>
             Search
           </button>
         </div>
       </section>
 
       {/* AI Recommendations Section */}
-      <section style={{ marginBottom: '60px' }}>
+      <section style={{ marginBottom: '50px' }}>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'baseline',
-          marginBottom: '32px',
+          marginBottom: '24px',
           borderBottom: '1px solid var(--border-color)',
-          paddingBottom: '16px'
+          paddingBottom: '14px',
+          flexWrap: 'wrap',
+          gap: '8px'
         }}>
           <div>
-            <h2 style={{ fontSize: '2rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Sparkles style={{ color: 'var(--primary)' }} size={28} /> AI Recommended for You
+            <h2 style={{ fontSize: 'clamp(1.3rem, 4vw, 1.8rem)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sparkles style={{ color: 'var(--primary)' }} size={24} /> AI Recommended for You
             </h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
               Properties personalized to your search trends and market behavior
             </p>
           </div>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
-          gap: '30px'
-        }}>
+        <div className="property-card-grid">
           {recommendedProperties.map((p) => {
             const isWishlisted = wishlist.includes(p.id);
             const isComparing = compareList.some(comp => comp.id === p.id);
@@ -320,26 +314,24 @@ export default function Home({ properties, wishlist, onToggleWishlist, compareLi
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'baseline',
-          marginBottom: '32px',
+          marginBottom: '24px',
           borderBottom: '1px solid var(--border-color)',
-          paddingBottom: '16px'
+          paddingBottom: '14px',
+          flexWrap: 'wrap',
+          gap: '8px'
         }}>
           <div>
-            <h2 style={{ fontSize: '2rem' }}>All Verified Listings</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
+            <h2 style={{ fontSize: 'clamp(1.3rem, 4vw, 1.8rem)' }}>All Verified Listings</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
               Hand-picked properties approved by Nestora Admin
             </p>
           </div>
-          <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 700 }}>
+          <span style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 700 }}>
             {filteredProperties.length} Properties found
           </span>
         </div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
-          gap: '30px'
-        }}>
+        <div className="property-card-grid">
           {filteredProperties.map((p) => {
             const isWishlisted = wishlist.includes(p.id);
             const isComparing = compareList.some(comp => comp.id === p.id);

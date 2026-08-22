@@ -261,14 +261,14 @@ export default function BuyerDashboard({ user, setUser, properties, wishlist, on
 
 
   return (
-    <div className="container animate-fade-in" style={{ paddingBottom: '80px', marginTop: '40px' }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '8px' }}>Buyer Dashboard</h1>
-      <p style={{ color: 'var(--text-muted)', marginBottom: '40px' }}>Manage your visits, wishlist, and verification status.</p>
+    <div className="container animate-fade-in" style={{ paddingBottom: '80px', marginTop: '24px' }}>
+      <h1 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', marginBottom: '8px' }}>Buyer Dashboard</h1>
+      <p style={{ color: 'var(--text-muted)', marginBottom: '32px' }}>Manage your visits, wishlist, and verification status.</p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '8fr 4fr', gap: '30px' }}>
+      <div className="buyer-dashboard-layout">
         
         {/* Left column: Bookings and Wishlist */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
           
           {/* My Bookings Section */}
           <div className="glass" style={{ padding: '32px' }}>
