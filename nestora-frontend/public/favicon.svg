@@ -1,30 +1,50 @@
-<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="500" height="500" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#cca353" />
-      <stop offset="50%" stop-color="#e5c378" />
-      <stop offset="100%" stop-color="#b38938" />
+    <linearGradient id="favGold" x1="10%" y1="0%" x2="90%" y2="100%">
+      <stop offset="0%" stop-color="#fff3b0" />
+      <stop offset="35%" stop-color="#f59e0b" />
+      <stop offset="70%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#b45309" />
     </linearGradient>
-    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#22c55e" />
-      <stop offset="100%" stop-color="#15803d" />
+    <linearGradient id="favEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7" />
+      <stop offset="45%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="favSlate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0b0f19" />
     </linearGradient>
   </defs>
-  <path d="M 120 280 A 170 170 0 1 1 340 160" stroke="url(#goldGrad)" stroke-width="14" stroke-linecap="round" fill="none"/>
-  <path d="M 270 270 L 270 160 L 305 120 L 305 270 Z" fill="#0b0f19" stroke="url(#goldGrad)" stroke-width="8"/>
-  <path d="M 310 270 L 310 145 L 340 170 L 340 270 Z" fill="#0b0f19" stroke="url(#goldGrad)" stroke-width="8"/>
-  <line x1="285" y1="180" x2="285" y2="250" stroke="url(#goldGrad)" stroke-width="4" />
-  <line x1="325" y1="190" x2="325" y2="250" stroke="url(#goldGrad)" stroke-width="4" />
-  <path d="M 190 140 L 190 280 L 225 280 L 225 210 L 275 280 L 300 280 L 245 190 L 300 140 L 270 140 L 225 210 L 225 140 Z" fill="#0f172a" stroke="url(#goldGrad)" stroke-width="6" stroke-linejoin="round"/>
-  <path d="M 160 300 L 235 210 L 310 300 L 290 300 L 235 235 L 180 300 Z" fill="url(#goldGrad)"/>
-  <path d="M 185 295 L 235 235 L 285 295 Z" fill="#0b0f19" stroke="url(#goldGrad)" stroke-width="4"/>
-  <rect x="220" y="260" width="12" height="12" fill="url(#goldGrad)" rx="2" />
-  <rect x="238" y="260" width="12" height="12" fill="url(#goldGrad)" rx="2" />
-  <rect x="220" y="278" width="12" height="12" fill="url(#goldGrad)" rx="2" />
-  <rect x="238" y="278" width="12" height="12" fill="url(#goldGrad)" rx="2" />
-  <line x1="365" y1="280" x2="365" y2="245" stroke="#0f172a" stroke-width="6" stroke-linecap="round" />
-  <path d="M 365 205 C 345 230 350 255 365 255 C 380 255 385 230 365 205 Z" fill="url(#greenGrad)"/>
-  <line x1="365" y1="215" x2="365" y2="250" stroke="#ffffff" stroke-width="2" opacity="0.6" />
-  <path d="M 110 320 C 180 280 280 290 395 300 C 370 320 280 310 110 320 Z" fill="url(#greenGrad)"/>
-  <path d="M 90 330 C 190 290 300 300 410 315 C 360 345 240 330 90 330 Z" fill="#0f172a" stroke="url(#goldGrad)" stroke-width="3"/>
+
+  <rect width="200" height="200" rx="44" fill="#0b0f19" />
+  <rect x="2" y="2" width="196" height="196" rx="42" stroke="url(#favGold)" stroke-width="4" fill="none" />
+
+  <!-- Outer Golden Arc -->
+  <path d="M 45 130 A 65 65 0 1 1 155 70" stroke="url(#favGold)" stroke-width="8" stroke-linecap="round" fill="none" />
+
+  <!-- Towers -->
+  <path d="M 115 130 L 115 65 L 138 45 L 138 130 Z" fill="url(#favSlate)" stroke="url(#favGold)" stroke-width="4" stroke-linejoin="round" />
+  <line x1="126" y1="72" x2="126" y2="120" stroke="url(#favGold)" stroke-width="3" stroke-linecap="round" />
+  <path d="M 136 130 L 136 78 L 154 62 L 154 130 Z" fill="url(#favSlate)" stroke="url(#favGold)" stroke-width="4" stroke-linejoin="round" />
+  <line x1="145" y1="84" x2="145" y2="120" stroke="url(#favGold)" stroke-width="2.5" stroke-linecap="round" />
+
+  <!-- Stylized N -->
+  <path d="M 68 62 L 68 130 L 86 130 L 86 94 L 112 130 L 126 130 L 98 88 L 126 62 L 108 62 L 86 94 L 86 62 Z" fill="url(#favSlate)" stroke="url(#favGold)" stroke-width="4" stroke-linejoin="round" />
+
+  <!-- Roof & House -->
+  <path d="M 60 134 L 100 86 L 140 134 L 126 134 L 100 102 L 74 134 Z" fill="url(#favGold)" />
+  <path d="M 76 132 L 100 102 L 124 132 Z" fill="#0b0f19" stroke="url(#favGold)" stroke-width="3" />
+  <rect x="92" y="112" width="6.5" height="6.5" fill="#fef08a" rx="1" />
+  <rect x="101.5" y="112" width="6.5" height="6.5" fill="#fef08a" rx="1" />
+  <rect x="92" y="120.5" width="6.5" height="6.5" fill="#fef08a" rx="1" />
+  <rect x="101.5" y="120.5" width="6.5" height="6.5" fill="#fef08a" rx="1" />
+
+  <!-- Tree -->
+  <line x1="165" y1="135" x2="165" y2="114" stroke="#78350f" stroke-width="3.5" stroke-linecap="round" />
+  <path d="M 165 92 C 152 108 155 124 165 124 C 175 124 178 108 165 92 Z" fill="url(#favEmerald)" />
+
+  <!-- Landscape -->
+  <path d="M 38 144 C 75 128 125 132 172 138 C 160 148 110 144 38 144 Z" fill="url(#favEmerald)" />
+  <path d="M 28 150 C 80 134 135 138 180 146 C 150 160 90 154 28 150 Z" fill="url(#favSlate)" stroke="url(#favGold)" stroke-width="2.5" />
 </svg>
