@@ -54,7 +54,7 @@ export default function Navbar({ user, onLogout, notifications = [], setNotifica
           onClick={() => setMobileMenuOpen(false)}
           style={{ display: 'flex', alignItems: 'center' }}
         >
-          <NestoraLogo size={36} showText={true} />
+          <NestoraLogo size={40} showText={true} />
         </Link>
 
         {/* 📱 MOBILE HAMBURGER MENU */}

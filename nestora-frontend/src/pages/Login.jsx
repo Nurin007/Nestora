@@ -86,16 +86,22 @@ export default function Login({ onLogin }) {
       <div className="glass animate-fade-in" style={{
         width: '100%',
         maxWidth: '480px',
-        padding: '36px',
+        padding: '36px 32px',
         borderRadius: '24px',
-        background: 'rgba(15, 23, 42, 0.85)',
-        border: '1px solid rgba(255, 255, 255, 0.12)',
-        boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8)'
+        background: 'rgba(10, 25, 47, 0.92)',
+        border: '1px solid rgba(197, 155, 39, 0.25)',
+        boxShadow: '0 25px 60px rgba(0, 0, 0, 0.85)'
       }}>
         {/* Official Brand Logo */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '28px', textAlign: 'center' }}>
-          <NestoraLogo size={70} showText={true} subtitle={true} />
-          <h2 style={{ fontSize: '1.5rem', marginTop: '16px', marginBottom: '4px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px', textAlign: 'center' }}>
+          <NestoraLogo size={110} showText={true} subtitle={true} stacked={true} />
+          <div style={{
+            height: '1px',
+            width: '80%',
+            background: 'linear-gradient(90deg, transparent, rgba(197, 155, 39, 0.35), transparent)',
+            margin: '20px auto 16px'
+          }} />
+          <h2 style={{ fontSize: '1.4rem', marginBottom: '4px', color: '#ffffff' }}>
             Account Sign In
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>

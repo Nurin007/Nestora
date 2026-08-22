@@ -1,213 +1,183 @@
 import React from 'react';
 
-export default function NestoraLogo({ size = 44, showText = true, subtitle = false, light = false }) {
+export default function NestoraLogo({ size = 44, showText = true, subtitle = false, light = false, stacked = false }) {
   const iconSize = size;
   
   return (
     <div style={{ 
       display: 'inline-flex', 
+      flexDirection: stacked ? 'column' : 'row',
       alignItems: 'center', 
-      gap: size > 40 ? '12px' : '9px', 
+      gap: stacked ? '14px' : (size > 40 ? '12px' : '9px'), 
       textDecoration: 'none',
       userSelect: 'none'
     }}>
-      {/* 🌟 Ultra-Vibrant Masterpiece Emblem */}
-      <div style={{
-        position: 'relative',
-        width: `${iconSize}px`,
-        height: `${iconSize}px`,
-        borderRadius: `${iconSize * 0.28}px`,
-        background: 'radial-gradient(circle at 30% 20%, rgba(30, 41, 59, 0.9), rgba(11, 15, 25, 0.95))',
-        border: '1.5px solid rgba(245, 158, 11, 0.35)',
-        boxShadow: '0 4px 20px -2px rgba(245, 158, 11, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2px',
-        flexShrink: 0,
-        overflow: 'hidden'
-      }}>
-        <svg 
-          width="100%" 
-          height="100%" 
-          viewBox="0 0 200 200" 
-          fill="none" 
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            {/* Rich Royal Gold Gradient */}
-            <linearGradient id="nestoraGold" x1="10%" y1="0%" x2="90%" y2="100%">
-              <stop offset="0%" stopColor="#fff3b0" />
-              <stop offset="35%" stopColor="#f59e0b" />
-              <stop offset="70%" stopColor="#d97706" />
-              <stop offset="100%" stopColor="#b45309" />
-            </linearGradient>
+      {/* 🏛️ Exact Brand Logo Emblem */}
+      <svg 
+        width={iconSize} 
+        height={iconSize} 
+        viewBox="0 0 500 450" 
+        fill="none" 
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ flexShrink: 0, filter: 'drop-shadow(0 4px 12px rgba(197, 155, 39, 0.25))' }}
+      >
+        <defs>
+          {/* Architectural Warm Gold Gradient */}
+          <linearGradient id="brandGold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#dfb75c" />
+            <stop offset="50%" stopColor="#c59b27" />
+            <stop offset="100%" stopColor="#9a7415" />
+          </linearGradient>
 
-            {/* Glowing Emerald Green Gradient */}
-            <linearGradient id="nestoraEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#6ee7b7" />
-              <stop offset="45%" stopColor="#10b981" />
-              <stop offset="100%" stopColor="#047857" />
-            </linearGradient>
+          {/* Deep Regal Brand Navy */}
+          <linearGradient id="brandNavy" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#162c4e" />
+            <stop offset="100%" stopColor="#0a192f" />
+          </linearGradient>
 
-            {/* Deep Slate / Midnight Blue Gradient */}
-            <linearGradient id="nestoraSlate" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#334155" />
-              <stop offset="100%" stopColor="#0f172a" />
-            </linearGradient>
+          {/* Nature Forest Green */}
+          <linearGradient id="brandGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#558d5d" />
+            <stop offset="50%" stopColor="#43734a" />
+            <stop offset="100%" stopColor="#2c5332" />
+          </linearGradient>
+        </defs>
 
-            {/* Luxury Cyan Accent Gradient */}
-            <linearGradient id="nestoraCyan" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#0284c7" />
-            </linearGradient>
+        {/* 🌟 1. Sweeping Golden Arc (Top Left to Center) */}
+        <path
+          d="M 160 260 C 110 200 120 90 235 55 C 330 25 390 100 395 150 C 375 110 325 50 235 70 C 145 90 135 190 175 250 Z"
+          fill="url(#brandGold)"
+        />
 
-            {/* Drop shadow filter */}
-            <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#f59e0b" floodOpacity="0.4" />
-            </filter>
-          </defs>
+        {/* 🌟 2. Gold Skyscraper Outlines (Right side) */}
+        {/* Tall Tower Back */}
+        <path
+          d="M 280 260 L 280 105 L 315 75 L 315 260 Z"
+          fill="#070d18"
+          stroke="url(#brandGold)"
+          strokeWidth="6"
+          strokeLinejoin="round"
+        />
+        <line x1="298" y1="105" x2="298" y2="250" stroke="url(#brandGold)" strokeWidth="3" strokeLinecap="round" />
 
-          {/* Background Ambient Glow */}
-          <circle cx="100" cy="100" r="70" fill="url(#nestoraGold)" opacity="0.08" />
+        {/* Medium Tower Front */}
+        <path
+          d="M 320 260 L 320 125 L 350 150 L 350 260 Z"
+          fill="#070d18"
+          stroke="url(#brandGold)"
+          strokeWidth="6"
+          strokeLinejoin="round"
+        />
+        <line x1="335" y1="150" x2="335" y2="250" stroke="url(#brandGold)" strokeWidth="3" strokeLinecap="round" />
 
-          {/* 🌟 1. Outer Golden Arc (Halo of Trust & Luxury) */}
-          <path
-            d="M 45 130 A 65 65 0 1 1 155 70"
-            stroke="url(#nestoraGold)"
-            strokeWidth="7"
-            strokeLinecap="round"
-            fill="none"
-            filter="url(#goldGlow)"
-          />
+        {/* Small Tower Right */}
+        <path
+          d="M 353 260 L 353 170 L 368 185 L 368 260 Z"
+          fill="#070d18"
+          stroke="url(#brandGold)"
+          strokeWidth="5"
+        />
 
-          {/* 🌟 2. Modern Architectural Towers (Skyscrapers) */}
-          {/* Back Tower */}
-          <path
-            d="M 115 130 L 115 65 L 138 45 L 138 130 Z"
-            fill="url(#nestoraSlate)"
-            stroke="url(#nestoraGold)"
-            strokeWidth="3.5"
-            strokeLinejoin="round"
-          />
-          {/* Back Tower Window Bars */}
-          <line x1="126" y1="72" x2="126" y2="120" stroke="url(#nestoraGold)" strokeWidth="2.5" strokeLinecap="round" opacity="0.9" />
+        {/* 🌟 3. The Iconic Swooping Dark Navy 'N' */}
+        <path
+          d="M 155 115 C 190 120 205 160 205 260 L 195 260 C 195 160 180 135 155 115 Z"
+          fill="#0a192f"
+        />
+        <path
+          d="M 155 115 C 180 125 195 160 195 260 L 225 260 L 225 210 L 280 260 L 315 260 L 315 100 L 285 100 L 285 195 L 230 145 C 210 125 185 115 155 115 Z"
+          fill="url(#brandNavy)"
+          stroke="#070d18"
+          strokeWidth="3"
+        />
 
-          {/* Middle Tower */}
-          <path
-            d="M 136 130 L 136 78 L 154 62 L 154 130 Z"
-            fill="url(#nestoraSlate)"
-            stroke="url(#nestoraGold)"
-            strokeWidth="3.5"
-            strokeLinejoin="round"
-          />
-          {/* Middle Tower Window Bars */}
-          <line x1="145" y1="84" x2="145" y2="120" stroke="url(#nestoraGold)" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
+        {/* 🌟 4. Residential House with Gable Roof & 4-Pane Window */}
+        {/* House Golden Roof Trim */}
+        <path
+          d="M 160 270 L 225 198 L 290 270 L 275 270 L 225 215 L 175 270 Z"
+          fill="url(#brandGold)"
+        />
+        {/* House Wall & Gables */}
+        <path
+          d="M 178 268 L 225 216 L 272 268 Z"
+          fill="#ffffff"
+        />
+        {/* 4 Square Window Panes in Dark Navy */}
+        <rect x="212" y="240" width="10" height="10" fill="#0a192f" rx="1.5" />
+        <rect x="226" y="240" width="10" height="10" fill="#0a192f" rx="1.5" />
+        <rect x="212" y="253" width="10" height="10" fill="#0a192f" rx="1.5" />
+        <rect x="226" y="253" width="10" height="10" fill="#0a192f" rx="1.5" />
 
-          {/* 🌟 3. Iconic Stylized 'N' Structure (The Nestora Pillar) */}
-          <path
-            d="M 68 62 L 68 130 L 86 130 L 86 94 L 112 130 L 126 130 L 98 88 L 126 62 L 108 62 L 86 94 L 86 62 Z"
-            fill="url(#nestoraSlate)"
-            stroke="url(#nestoraGold)"
-            strokeWidth="3.5"
-            strokeLinejoin="round"
-          />
+        {/* 🌟 5. Nature Tree (Right of House) */}
+        <path
+          d="M 370 248 L 370 220"
+          stroke="#2c5332"
+          strokeWidth="5"
+          strokeLinecap="round"
+        />
+        {/* Tree Leaf Crown */}
+        <path
+          d="M 370 190 C 350 215 352 238 370 238 C 388 238 390 215 370 190 Z"
+          fill="url(#brandGreen)"
+        />
+        <line x1="370" y1="198" x2="370" y2="234" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" opacity="0.8" />
 
-          {/* 🌟 4. Cozy Home Roof & Centerpiece with Lighted Window */}
-          {/* Roof Ridge */}
-          <path
-            d="M 60 134 L 100 86 L 140 134 L 126 134 L 100 102 L 74 134 Z"
-            fill="url(#nestoraGold)"
-            filter="url(#goldGlow)"
-          />
-          {/* House Gable */}
-          <path
-            d="M 76 132 L 100 102 L 124 132 Z"
-            fill="#0b0f19"
-            stroke="url(#nestoraGold)"
-            strokeWidth="2.5"
-          />
-          {/* Glowing Golden Windows */}
-          <rect x="92" y="112" width="6.5" height="6.5" fill="#fef08a" rx="1.5" />
-          <rect x="101.5" y="112" width="6.5" height="6.5" fill="#fef08a" rx="1.5" />
-          <rect x="92" y="120.5" width="6.5" height="6.5" fill="#fef08a" rx="1.5" />
-          <rect x="101.5" y="120.5" width="6.5" height="6.5" fill="#fef08a" rx="1.5" />
+        {/* 🌟 6. Rolling Green Hills & Navy Waves */}
+        {/* Top Green Rolling Hill with White Contour Streaks */}
+        <path
+          d="M 240 280 C 300 245 350 255 405 265 C 380 285 300 285 240 280 Z"
+          fill="url(#brandGreen)"
+        />
+        <path
+          d="M 270 273 C 310 260 340 262 380 270"
+          stroke="#ffffff"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          opacity="0.8"
+        />
 
-          {/* 🌟 5. Eco-Friendly Nature & Greenery (Sustainability & Smart Living) */}
-          {/* Tree Trunk */}
-          <line x1="165" y1="135" x2="165" y2="114" stroke="#78350f" strokeWidth="3" strokeLinecap="round" />
-          {/* Lush Green Foliage */}
-          <path
-            d="M 165 92 C 152 108 155 124 165 124 C 175 124 178 108 165 92 Z"
-            fill="url(#nestoraEmerald)"
-          />
-          <path
-            d="M 165 96 L 165 120"
-            stroke="#ffffff"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            opacity="0.6"
-          />
+        {/* Bottom Swirling Navy Wave Base */}
+        <path
+          d="M 105 285 C 160 260 250 275 395 280 C 405 292 370 305 290 305 C 190 305 130 300 105 285 Z"
+          fill="url(#brandNavy)"
+        />
+        {/* Golden Wave Accent Line */}
+        <path
+          d="M 125 288 C 175 272 260 282 370 288"
+          stroke="url(#brandGold)"
+          strokeWidth="3.5"
+          strokeLinecap="round"
+        />
+      </svg>
 
-          {/* 🌟 6. Rolling Emerald Hills & Golden Foundation Horizon */}
-          {/* Green Landscape Hill */}
-          <path
-            d="M 38 144 C 75 128 125 132 172 138 C 160 148 110 144 38 144 Z"
-            fill="url(#nestoraEmerald)"
-          />
-          {/* Golden River Base Wave */}
-          <path
-            d="M 28 150 C 80 134 135 138 180 146 C 150 160 90 154 28 150 Z"
-            fill="url(#nestoraSlate)"
-            stroke="url(#nestoraGold)"
-            strokeWidth="2"
-          />
-        </svg>
-      </div>
-
-      {/* 🌟 Rich Typography & Branding */}
+      {/* 🌟 Official Typography */}
       {showText && (
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{
-              fontSize: size >= 42 ? '1.5rem' : '1.25rem',
-              fontWeight: 800,
-              letterSpacing: '-0.5px',
-              fontFamily: 'var(--font-accent)',
-              background: 'linear-gradient(135deg, #ffffff 30%, #fbbf24 85%, #f59e0b 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              lineHeight: 1.1,
-              filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))'
-            }}>
-              Nestora
-            </span>
-            <span style={{
-              background: 'linear-gradient(135deg, #10b981, #059669)',
-              color: '#ffffff',
-              fontSize: '0.58rem',
-              fontWeight: 800,
-              padding: '2px 6px',
-              borderRadius: '6px',
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              boxShadow: '0 2px 6px rgba(16, 185, 129, 0.35)'
-            }}>
-              PRO
-            </span>
-          </div>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: stacked ? 'center' : 'flex-start',
+          textAlign: stacked ? 'center' : 'left'
+        }}>
+          <span style={{
+            fontSize: size >= 60 ? '2.4rem' : (size >= 40 ? '1.5rem' : '1.2rem'),
+            fontWeight: 900,
+            letterSpacing: '-0.5px',
+            fontFamily: 'var(--font-accent)',
+            color: '#ffffff',
+            lineHeight: 1.1,
+            textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)'
+          }}>
+            Nestora
+          </span>
           
           {subtitle && (
             <span style={{
-              fontSize: '0.72rem',
-              fontWeight: 600,
-              color: 'var(--primary)',
-              letterSpacing: '0.06em',
-              textTransform: 'uppercase',
-              marginTop: '3px',
-              opacity: 0.95
+              fontSize: size >= 60 ? '0.95rem' : '0.72rem',
+              fontWeight: 700,
+              color: 'var(--primary-light)',
+              letterSpacing: '0.04em',
+              marginTop: '4px'
             }}>
-              Smart Real Estate Platform
+              Smart Real Estate Management Platform
             </span>
           )}
         </div>
