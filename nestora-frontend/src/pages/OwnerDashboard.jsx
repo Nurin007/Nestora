@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Calendar, PlusCircle, Check, X, ShieldAlert, FileText, Image, Lock, Eye, EyeOff, RefreshCw, CheckCircle, AlertCircle, User } from 'lucide-react';
+import { Calendar, PlusCircle, Check, X, ShieldAlert, FileText, Image, Lock, Eye, EyeOff, RefreshCw, CheckCircle, AlertCircle, User, CreditCard, DollarSign, Receipt } from 'lucide-react';
 
-export default function OwnerDashboard({ user, setUser, properties, setProperties, bookings, setBookings, triggerNotification }) {
-  // Tabs: 'listings', 'bookings', 'create', 'settings'
+export default function OwnerDashboard({ user, setUser, properties, setProperties, bookings, setBookings, payments = [], triggerNotification }) {
+  // Tabs: 'listings', 'bookings', 'payments', 'create', 'settings'
   const [activeTab, setActiveTab] = useState('listings');
 
   // Change Password state
@@ -160,13 +160,16 @@ export default function OwnerDashboard({ user, setUser, properties, setPropertie
     }).format(value);
   };
 
+  // Filter received payments for this owner's properties
+  const myReceivedPayments = payments.filter(p => myPropertyIds.includes(p.propertyId) || p.ownerId === user.id);
+
   return (
     <div className="container animate-fade-in" style={{ paddingBottom: '80px', marginTop: '40px' }}>
       <h1 style={{ fontSize: '2.5rem', marginBottom: '8px' }}>Owner & Agent Dashboard</h1>
-      <p style={{ color: 'var(--text-muted)', marginBottom: '32px' }}>Manage your property portfolio and incoming inspection visits.</p>
+      <p style={{ color: 'var(--text-muted)', marginBottom: '32px' }}>Manage your property portfolio, received payments, and incoming inspection visits.</p>
 
       {/* Tabs Menu */}
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
+      <div style={{ display: 'flex', gap: '16px', marginBottom: '32px', flexWrap: 'wrap' }}>
         <button 
           onClick={() => setActiveTab('listings')}
           className={`btn ${activeTab === 'listings' ? 'btn-primary' : 'btn-secondary'}`}
@@ -178,6 +181,13 @@ export default function OwnerDashboard({ user, setUser, properties, setPropertie
           className={`btn ${activeTab === 'bookings' ? 'btn-primary' : 'btn-secondary'}`}
         >
           Inspection Bookings ({myPropertyBookings.length})
+        </button>
+        <button 
+          onClick={() => setActiveTab('payments')}
+          className={`btn ${activeTab === 'payments' ? 'btn-primary' : 'btn-secondary'}`}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+        >
+          <CreditCard size={16} /> Received Payments ({myReceivedPayments.length})
         </button>
         <button 
           onClick={() => setActiveTab('create')}
@@ -194,6 +204,94 @@ export default function OwnerDashboard({ user, setUser, properties, setPropertie
           <Lock size={16} /> Account Settings
         </button>
       </div>
+
+      {/* Tab: Received Payments */}
+      {activeTab === 'payments' && (
+        <div className="glass animate-fade-in" style={{ padding: '32px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+            <div>
+              <h2 style={{ fontSize: '1.5rem', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <CreditCard style={{ color: 'var(--primary)' }} /> Received Booking Advances & Rents
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
+                Escrow deposits and payments collected from verified buyers.
+              </p>
+            </div>
+            <div style={{
+              background: 'rgba(204, 163, 83, 0.1)',
+              border: '1px solid rgba(204, 163, 83, 0.25)',
+              padding: '10px 18px',
+              borderRadius: '12px',
+              textAlign: 'right'
+            }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Total Earnings Received</span>
+              <strong style={{ fontSize: '1.4rem', color: 'var(--primary)' }}>
+                {formatBDT(myReceivedPayments.filter(p => p.status === 'COMPLETED').reduce((acc, curr) => acc + (curr.amount || 0), 0))}
+              </strong>
+            </div>
+          </div>
+
+          {myReceivedPayments.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
+              <Receipt size={40} style={{ color: 'var(--text-dark)', marginBottom: '12px' }} />
+              <p>No payments received for your properties yet.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {myReceivedPayments.map((p) => (
+                <div key={p.id} style={{
+                  padding: '20px',
+                  borderRadius: '14px',
+                  background: 'rgba(255,255,255,0.01)',
+                  border: '1px solid var(--border-color)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '14px'
+                }}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontFamily: 'monospace', fontWeight: 800, color: 'var(--primary)', fontSize: '0.9rem' }}>
+                        {p.transactionId}
+                      </span>
+                      <span style={{
+                        padding: '2px 8px',
+                        borderRadius: '6px',
+                        fontSize: '0.7rem',
+                        fontWeight: 700,
+                        background: p.status === 'COMPLETED' ? 'rgba(16, 185, 129, 0.15)' :
+                                    p.status === 'PENDING' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                        color: p.status === 'COMPLETED' ? '#10b981' :
+                               p.status === 'PENDING' ? '#f59e0b' : '#ef4444'
+                      }}>
+                        {p.status}
+                      </span>
+                    </div>
+                    <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: '2px 0' }}>{p.propertyTitle}</h4>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                      Payer: <strong style={{ color: '#ffffff' }}>{p.buyerName}</strong> ({p.buyerPhone || p.buyerEmail})
+                    </p>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-dark)' }}>
+                      Payment Type: {p.paymentType?.replace('_', ' ')} • Channel: {p.paymentMethod} • Date: {new Date(p.createdAt).toLocaleDateString('en-BD')}
+                    </span>
+                  </div>
+
+                  <div style={{ textAlign: 'right' }}>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block' }}>Net Amount</span>
+                    <strong style={{ fontSize: '1.4rem', color: 'var(--primary)', display: 'block' }}>
+                      {formatBDT(p.amount)}
+                    </strong>
+                    <span style={{ fontSize: '0.75rem', color: '#10b981' }}>
+                      {p.status === 'COMPLETED' ? '✓ Credited to Owner Account' : '⏳ Escrow Verification Pending'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Tab: My Listings */}
       {activeTab === 'listings' && (

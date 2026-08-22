@@ -1,11 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Calendar, Clock, DollarSign, Award, ArrowLeft, Send, CheckCircle, Calculator, Map, MapPin, MessageSquare, TrendingUp, Bot } from 'lucide-react';
+import { Calendar, Clock, DollarSign, Award, ArrowLeft, Send, CheckCircle, Calculator, Map, MapPin, MessageSquare, TrendingUp, Bot, CreditCard, Lock, ShieldCheck, Wallet } from 'lucide-react';
+import PaymentModal from '../components/PaymentModal';
 
-export default function PropertyDetails({ user, properties, bookings, setBookings, reviews, setReviews, triggerNotification }) {
+export default function PropertyDetails({ user, properties, bookings, setBookings, payments = [], onAddPayment, reviews, setReviews, triggerNotification }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const property = properties.find((p) => p.id === parseInt(id));
+
+  // --- Payment Modal State ---
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [paymentModalType, setPaymentModalType] = useState('BOOKING_ADVANCE');
 
   // --- Image Gallery State ---
   const [activeImage, setActiveImage] = useState(property?.images?.[0] || '');
@@ -458,6 +463,57 @@ export default function PropertyDetails({ user, properties, bookings, setBooking
             <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '20px' }}>
               Tax & Registration fees not included in listed price.
             </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentModalType('BOOKING_ADVANCE');
+                  setIsPaymentOpen(true);
+                }}
+                className="btn btn-primary"
+                style={{
+                  width: '100%',
+                  padding: '14px',
+                  borderRadius: '12px',
+                  fontWeight: 800,
+                  fontSize: '0.95rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: '0 4px 20px rgba(204, 163, 83, 0.35)'
+                }}
+              >
+                <CreditCard size={18} />
+                <span>Pay Booking Advance (অগ্রিম বুকিং)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentModalType(property.propertyType === 'RENTAL' ? 'MONTHLY_RENT' : 'FULL_PAYMENT');
+                  setIsPaymentOpen(true);
+                }}
+                className="btn btn-secondary"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '12px',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  background: 'rgba(255,255,255,0.06)'
+                }}
+              >
+                <Wallet size={16} style={{ color: 'var(--primary)' }} />
+                <span>{property.propertyType === 'RENTAL' ? 'Pay Rent Online' : 'Pay Full / Down Payment'}</span>
+              </button>
+            </div>
+
             <Link
               to="/chat"
               className="btn btn-secondary"
@@ -659,6 +715,19 @@ export default function PropertyDetails({ user, properties, bookings, setBooking
         </div>
 
       </div>
+
+      {/* Payment Gateway Modal */}
+      <PaymentModal
+        isOpen={isPaymentOpen}
+        onClose={() => setIsPaymentOpen(false)}
+        property={property}
+        user={user}
+        paymentType={paymentModalType}
+        onPaymentSuccess={(newPayment) => {
+          if (onAddPayment) onAddPayment(newPayment);
+        }}
+        triggerNotification={triggerNotification}
+      />
 
     </div>
   );

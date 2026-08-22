@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Calendar, Heart, Shield, RefreshCw, Star, Trash2, Bell, BellOff, Search, Plus, X, AlertCircle, CheckCircle, Clock, MessageSquare, Lock, Eye, EyeOff, User } from 'lucide-react';
+import { Calendar, Heart, Shield, RefreshCw, Star, Trash2, Bell, BellOff, Search, Plus, X, AlertCircle, CheckCircle, Clock, MessageSquare, Lock, Eye, EyeOff, User, CreditCard, Receipt, Printer } from 'lucide-react';
 
-export default function BuyerDashboard({ user, setUser, properties, wishlist, onToggleWishlist, bookings, setBookings, triggerNotification, savedSearches, setSavedSearches, complaints, setComplaints }) {
+export default function BuyerDashboard({ user, setUser, properties, wishlist, onToggleWishlist, bookings, setBookings, payments = [], onAddPayment, triggerNotification, savedSearches, setSavedSearches, complaints, setComplaints }) {
   const navigate = useNavigate();
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [docType, setDocType] = useState('NID');
   const [docNumber, setDocNumber] = useState('');
   const [docUrl, setDocUrl] = useState('');
@@ -395,6 +396,80 @@ export default function BuyerDashboard({ user, setUser, properties, wishlist, on
                     </div>
                   );
                 })}
+              </div>
+            )}
+          </div>
+
+          {/* My Payments & Invoices Section */}
+          <div className="glass" style={{ padding: '32px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+              <h2 style={{ fontSize: '1.5rem', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <CreditCard style={{ color: 'var(--primary)' }} /> My Payments & Digital Invoices
+              </h2>
+              <span style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 700 }}>
+                {payments.filter(p => p.buyerId === user.id || p.buyerEmail === user.email).length} Transactions
+              </span>
+            </div>
+
+            {payments.filter(p => p.buyerId === user.id || p.buyerEmail === user.email).length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '30px 20px', color: 'var(--text-muted)' }}>
+                <Receipt size={36} style={{ color: 'var(--text-dark)', marginBottom: '10px' }} />
+                <p style={{ fontSize: '0.9rem' }}>You haven't made any online booking advance or rent payments yet.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {payments
+                  .filter(p => p.buyerId === user.id || p.buyerEmail === user.email)
+                  .map((p) => (
+                    <div key={p.id} style={{
+                      padding: '18px 20px',
+                      borderRadius: '14px',
+                      background: 'rgba(255,255,255,0.02)',
+                      border: '1px solid var(--border-color)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '12px'
+                    }}>
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                          <span style={{ fontFamily: 'monospace', fontWeight: 800, color: 'var(--primary)', fontSize: '0.9rem' }}>
+                            {p.transactionId}
+                          </span>
+                          <span style={{
+                            padding: '2px 8px',
+                            borderRadius: '6px',
+                            fontSize: '0.7rem',
+                            fontWeight: 700,
+                            background: p.status === 'COMPLETED' ? 'rgba(16, 185, 129, 0.15)' :
+                                        p.status === 'PENDING' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                            color: p.status === 'COMPLETED' ? '#10b981' :
+                                   p.status === 'PENDING' ? '#f59e0b' : '#ef4444'
+                          }}>
+                            {p.status}
+                          </span>
+                        </div>
+                        <h4 style={{ fontSize: '1rem', fontWeight: 700, margin: '2px 0' }}>{p.propertyTitle}</h4>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                          {p.paymentType?.replace('_', ' ')} • via {p.paymentMethod} • {new Date(p.createdAt).toLocaleDateString('en-BD')}
+                        </p>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#ffffff' }}>
+                          ৳{p.amount.toLocaleString()}
+                        </span>
+                        <button
+                          onClick={() => setSelectedVoucher(p)}
+                          className="btn btn-secondary"
+                          style={{ padding: '8px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
+                        >
+                          <Receipt size={14} /> Voucher
+                        </button>
+                      </div>
+                    </div>
+                  ))}
               </div>
             )}
           </div>
@@ -1022,6 +1097,88 @@ export default function BuyerDashboard({ user, setUser, properties, wishlist, on
         </div>
 
       </div>
+
+      {/* Voucher Modal Preview */}
+      {selectedVoucher && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.85)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          padding: '20px'
+        }}>
+          <div className="glass animate-fade-in" style={{
+            background: '#0e1526',
+            width: '100%',
+            maxWidth: '500px',
+            padding: '30px',
+            borderRadius: '20px',
+            border: '1px solid rgba(255,255,255,0.15)'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Receipt style={{ color: 'var(--primary)' }} size={20} />
+                <h3 style={{ fontSize: '1.2rem', fontWeight: 800, margin: 0 }}>Official Payment Voucher</h3>
+              </div>
+              <button onClick={() => setSelectedVoucher(null)} style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div style={{
+              background: 'rgba(255,255,255,0.02)',
+              padding: '20px',
+              borderRadius: '12px',
+              border: '1px solid var(--border-color)',
+              marginBottom: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Transaction ID:</span>
+                <span style={{ color: 'var(--primary)', fontFamily: 'monospace', fontWeight: 800 }}>{selectedVoucher.transactionId}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Property:</span>
+                <strong style={{ color: '#ffffff', textAlign: 'right', maxWidth: '240px' }}>{selectedVoucher.propertyTitle}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Payment For:</span>
+                <span>{selectedVoucher.paymentType?.replace('_', ' ')}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Channel / Method:</span>
+                <span style={{ fontWeight: 700 }}>{selectedVoucher.paymentMethod}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Date & Time:</span>
+                <span>{new Date(selectedVoucher.createdAt).toLocaleString('en-BD')}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', paddingTop: '10px', borderTop: '1px solid var(--border-color)' }}>
+                <span style={{ fontWeight: 700 }}>Paid Amount:</span>
+                <strong style={{ color: 'var(--primary)' }}>৳{selectedVoucher.amount.toLocaleString()}</strong>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => window.print()} className="btn btn-secondary" style={{ flex: 1 }}>
+                <Printer size={16} /> Print Voucher
+              </button>
+              <button onClick={() => setSelectedVoucher(null)} className="btn btn-primary" style={{ flex: 1 }}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

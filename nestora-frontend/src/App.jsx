@@ -114,7 +114,7 @@ const INITIAL_PROPERTIES = [
     description: 'Prime residential plot in Sector 11, Uttara. High growth zone facing lake view road. Ready for immediate construction of up to 10-story building (RAJUK approved).',
     propertyType: 'LAND',
     status: 'AVAILABLE',
-    verificationStatus: 'PENDING', // Pending Admin review
+    verificationStatus: 'PENDING',
     pricing: 28000000,
     areaSize: 3600,
     numberOfBedrooms: 0,
@@ -128,6 +128,86 @@ const INITIAL_PROPERTIES = [
     images: [
       'https://images.unsplash.com/photo-1524813686514-a57563d77d61?auto=format&fit=crop&w=800&q=80'
     ]
+  }
+];
+
+const INITIAL_PAYMENTS = [
+  {
+    id: 101,
+    transactionId: 'BKX8921345',
+    propertyId: 1,
+    propertyTitle: 'Luxury Gold-Accent Penthouse',
+    propertyCity: 'Dhaka',
+    propertyAddress: 'Road 45, Gulshan 2',
+    propertyType: 'RESIDENTIAL',
+    buyerId: 4,
+    buyerName: 'Karim Ahmed',
+    buyerEmail: 'buyer@nestora.com',
+    buyerPhone: '+8801712345678',
+    ownerId: 2,
+    paymentType: 'BOOKING_ADVANCE',
+    paymentMethod: 'BKASH',
+    amount: 100000,
+    currency: 'BDT',
+    status: 'COMPLETED',
+    note: 'Token booking money for Gulshan penthouse inspection priority',
+    createdAt: new Date(Date.now() - 3600000 * 24 * 2).toISOString(),
+    paymentMeta: {
+      methodName: 'bKash',
+      senderPhone: '01712345678'
+    }
+  },
+  {
+    id: 102,
+    transactionId: 'NGD4918239',
+    propertyId: 4,
+    propertyTitle: 'Modern Duplex in Bashundhara',
+    propertyCity: 'Dhaka',
+    propertyAddress: 'Block I, Bashundhara R/A',
+    propertyType: 'RENTAL',
+    buyerId: 4,
+    buyerName: 'Nurin Chowdhury',
+    buyerEmail: 'nurin@example.com',
+    buyerPhone: '+8801819283746',
+    ownerId: 3,
+    paymentType: 'MONTHLY_RENT',
+    paymentMethod: 'NAGAD',
+    amount: 85000,
+    currency: 'BDT',
+    status: 'COMPLETED',
+    note: 'Monthly rental advance deposit for Bashundhara duplex',
+    createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),
+    paymentMeta: {
+      methodName: 'Nagad',
+      senderPhone: '01819283746'
+    }
+  },
+  {
+    id: 103,
+    transactionId: 'BNK7729104',
+    propertyId: 2,
+    propertyTitle: 'High-Yield Commercial Plaza',
+    propertyCity: 'Dhaka',
+    propertyAddress: 'Motijheel Commercial Area',
+    propertyType: 'COMMERCIAL',
+    buyerId: 5,
+    buyerName: 'Apex Holdings Ltd',
+    buyerEmail: 'corporate@apex.com.bd',
+    buyerPhone: '+8801911928374',
+    ownerId: 3,
+    paymentType: 'BOOKING_ADVANCE',
+    paymentMethod: 'BANK',
+    amount: 500000,
+    currency: 'BDT',
+    status: 'PENDING',
+    note: 'Commercial floor reservation security deposit via City Bank EFT',
+    createdAt: new Date(Date.now() - 3600000 * 4).toISOString(),
+    paymentMeta: {
+      methodName: 'Direct Bank Transfer',
+      bankName: 'The City Bank Ltd',
+      bankBranch: 'Motijheel Corporate Branch',
+      bankTxnRef: 'EFT-2026-92847'
+    }
   }
 ];
 
@@ -165,6 +245,11 @@ export default function App() {
         remarks: 'Would love to inspect the lake view balcony and generator capacity.'
       }
     ];
+  });
+
+  const [payments, setPayments] = useState(() => {
+    const saved = localStorage.getItem('nestora_payments');
+    return saved ? JSON.parse(saved) : INITIAL_PAYMENTS;
   });
 
   const [complaints, setComplaints] = useState(() => {
@@ -216,6 +301,10 @@ export default function App() {
   }, [bookings]);
 
   useEffect(() => {
+    localStorage.setItem('nestora_payments', JSON.stringify(payments));
+  }, [payments]);
+
+  useEffect(() => {
     localStorage.setItem('nestora_complaints', JSON.stringify(complaints));
   }, [complaints]);
 
@@ -247,12 +336,92 @@ export default function App() {
     setNotifications(prev => [newNotif, ...prev]);
   };
 
-  const handleLogin = (userData) => {
+  const handleAddPayment = (newPayment) => {
+    setPayments(prev => [newPayment, ...prev]);
+    // Log to audit log
+    setAuditLogs(prev => [
+      {
+        id: Date.now(),
+        adminId: 1,
+        action: 'PAYMENT_RECEIVED',
+        targetType: 'PAYMENT',
+        targetId: newPayment.id,
+        remarks: `${newPayment.buyerName} paid ৳${newPayment.amount.toLocaleString()} via ${newPayment.paymentMethod} (Txn: ${newPayment.transactionId})`,
+        createdAt: new Date().toISOString()
+      },
+      ...prev
+    ]);
+  };
+
+  const handleLogin = (userData, isNewRegistration = false) => {
     setUser(userData);
     localStorage.setItem('nestora_user', JSON.stringify(userData));
+
+    const loginTime = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+    if (isNewRegistration) {
+      // 1. Notify Admin (User ID: 1)
+      triggerNotification(
+        1,
+        '🎉 New User Registration Alert',
+        `New account registered: ${userData.fullName} as ${userData.role} (${userData.email}).`
+      );
+      // 2. Notify new user
+      triggerNotification(
+        userData.id,
+        'Welcome to Nestora!',
+        `Your account has been created successfully as a ${userData.role}. Explore properties or list yours!`
+      );
+      // 3. Audit log
+      setAuditLogs(prev => [
+        {
+          id: Date.now(),
+          adminId: 1,
+          action: 'USER_REGISTER',
+          targetType: 'USER',
+          targetId: userData.id,
+          remarks: `New user registration: ${userData.fullName} (${userData.role})`,
+          createdAt: new Date().toISOString()
+        },
+        ...prev
+      ]);
+    } else {
+      // 1. Notify Admin (User ID: 1)
+      triggerNotification(
+        1,
+        '🔔 User Login Alert',
+        `User ${userData.fullName} (${userData.role}) just signed in to Nestora at ${loginTime}.`
+      );
+      // 2. Notify user for account security
+      triggerNotification(
+        userData.id,
+        '🔐 Security Alert: Successful Login',
+        `You signed in successfully to Nestora at ${loginTime}.`
+      );
+      // 3. Audit log
+      setAuditLogs(prev => [
+        {
+          id: Date.now(),
+          adminId: 1,
+          action: 'USER_LOGIN',
+          targetType: 'USER',
+          targetId: userData.id,
+          remarks: `Login session initiated by ${userData.fullName} (${userData.role})`,
+          createdAt: new Date().toISOString()
+        },
+        ...prev
+      ]);
+    }
   };
 
   const handleLogout = () => {
+    if (user) {
+      triggerNotification(
+        1,
+        '🚪 User Logout Notice',
+        `User ${user.fullName} (${user.role}) logged out.`
+      );
+    }
     setUser(null);
     localStorage.removeItem('nestora_user');
   };
@@ -292,11 +461,11 @@ export default function App() {
         } />
         
         <Route path="/login" element={
-          user ? <Navigate to="/" /> : <Home properties={properties} wishlist={wishlist} onToggleWishlist={handleToggleWishlist} /> && <Login onLogin={handleLogin} />
+          user ? <Navigate to="/" /> : <Login onLogin={(data) => handleLogin(data, false)} />
         } />
         
         <Route path="/register" element={
-          user ? <Navigate to="/" /> : <Register onLogin={handleLogin} />
+          user ? <Navigate to="/" /> : <Register onLogin={(data) => handleLogin(data, true)} />
         } />
         
         <Route path="/property/:id" element={
@@ -305,6 +474,8 @@ export default function App() {
             properties={properties} 
             bookings={bookings}
             setBookings={setBookings}
+            payments={payments}
+            onAddPayment={handleAddPayment}
             reviews={reviews}
             setReviews={setReviews}
             triggerNotification={triggerNotification}
@@ -365,6 +536,8 @@ export default function App() {
               onToggleWishlist={handleToggleWishlist}
               bookings={bookings}
               setBookings={setBookings}
+              payments={payments}
+              onAddPayment={handleAddPayment}
               triggerNotification={triggerNotification}
               savedSearches={savedSearches}
               setSavedSearches={setSavedSearches}
@@ -383,6 +556,7 @@ export default function App() {
               setProperties={setProperties}
               bookings={bookings}
               setBookings={setBookings}
+              payments={payments}
               triggerNotification={triggerNotification}
             />
           ) : <Navigate to="/" />
@@ -395,6 +569,8 @@ export default function App() {
               properties={properties}
               setProperties={setProperties}
               bookings={bookings}
+              payments={payments}
+              setPayments={setPayments}
               complaints={complaints}
               setComplaints={setComplaints}
               auditLogs={auditLogs}

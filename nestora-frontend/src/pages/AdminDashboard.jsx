@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Home, AlertCircle, FileText, BarChart3, Database, CheckCircle, XCircle, Clock, Filter } from 'lucide-react';
+import { ShieldCheck, Home, AlertCircle, FileText, BarChart3, Database, CheckCircle, XCircle, Clock, Filter, CreditCard, DollarSign, Search, Check, Printer, Smartphone, Building } from 'lucide-react';
 
-export default function AdminDashboard({ properties, setProperties, bookings, complaints, setComplaints, auditLogs, setAuditLogs, reviews = [], setReviews, triggerNotification }) {
-  // Tabs: 'kyc', 'properties', 'complaints', 'logs', 'analytics', 'reviews'
-  const [activeTab, setActiveTab] = useState('kyc');
+export default function AdminDashboard({ properties, setProperties, bookings, payments = [], setPayments, complaints, setComplaints, auditLogs, setAuditLogs, reviews = [], setReviews, triggerNotification }) {
+  // Tabs: 'kyc', 'properties', 'payments', 'reviews', 'broadcast', 'complaints', 'logs', 'analytics'
+  const [activeTab, setActiveTab] = useState('payments');
   const [complaintFilter, setComplaintFilter] = useState('ALL');
+  
+  // Payments tab state
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState('ALL');
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState('ALL');
+  const [paymentSearchQuery, setPaymentSearchQuery] = useState('');
+  const [selectedReceipt, setSelectedReceipt] = useState(null);
 
   // We mock a list of users pending KYC reviews for testing
   const [pendingKycUsers, setPendingKycUsers] = useState([
@@ -14,6 +20,92 @@ export default function AdminDashboard({ properties, setProperties, bookings, co
 
   const pendingProperties = properties.filter(p => p.verificationStatus === 'PENDING');
   const pendingReviews = reviews.filter(r => r.moderationStatus === 'PENDING');
+  const pendingPayments = payments.filter(p => p.status === 'PENDING');
+
+  const formatBDT = (val) => {
+    return new Intl.NumberFormat('en-BD', {
+      style: 'currency',
+      currency: 'BDT',
+      maximumFractionDigits: 0
+    }).format(val || 0);
+  };
+
+  const handleApprovePayment = (paymentId) => {
+    const targetPayment = payments.find(p => p.id === paymentId);
+    if (!targetPayment) return;
+
+    setPayments(payments.map(p => p.id === paymentId ? { ...p, status: 'COMPLETED' } : p));
+
+    // Audit log
+    setAuditLogs([
+      {
+        id: Date.now(),
+        adminId: 1,
+        action: 'VERIFY_PAYMENT',
+        targetType: 'PAYMENT',
+        targetId: paymentId,
+        remarks: `Verified & approved payment ${targetPayment.transactionId} of ${formatBDT(targetPayment.amount)} from ${targetPayment.buyerName}`,
+        createdAt: new Date().toISOString()
+      },
+      ...auditLogs
+    ]);
+
+    // Notify Buyer
+    if (targetPayment.buyerId) {
+      triggerNotification(
+        targetPayment.buyerId,
+        '✅ Bank Transfer Payment Approved',
+        `Your payment of ${formatBDT(targetPayment.amount)} for "${targetPayment.propertyTitle}" has been verified by the Admin team.`
+      );
+    }
+
+    // Notify Owner
+    if (targetPayment.ownerId) {
+      triggerNotification(
+        targetPayment.ownerId,
+        '💰 Payment Deposited to Escrow',
+        `Payment of ${formatBDT(targetPayment.amount)} from ${targetPayment.buyerName} for your property has been verified by Admin.`
+      );
+    }
+
+    alert(`Payment ${targetPayment.transactionId} verified successfully.`);
+  };
+
+  const handleRefundPayment = (paymentId) => {
+    const targetPayment = payments.find(p => p.id === paymentId);
+    if (!targetPayment) return;
+
+    if (!window.confirm(`Are you sure you want to refund ${formatBDT(targetPayment.amount)} to ${targetPayment.buyerName}?`)) {
+      return;
+    }
+
+    setPayments(payments.map(p => p.id === paymentId ? { ...p, status: 'REFUNDED' } : p));
+
+    // Audit log
+    setAuditLogs([
+      {
+        id: Date.now(),
+        adminId: 1,
+        action: 'REFUND_PAYMENT',
+        targetType: 'PAYMENT',
+        targetId: paymentId,
+        remarks: `Refunded payment ${targetPayment.transactionId} of ${formatBDT(targetPayment.amount)} to ${targetPayment.buyerName}`,
+        createdAt: new Date().toISOString()
+      },
+      ...auditLogs
+    ]);
+
+    // Notify Buyer
+    if (targetPayment.buyerId) {
+      triggerNotification(
+        targetPayment.buyerId,
+        '💸 Payment Refund Initiated',
+        `Your refund of ${formatBDT(targetPayment.amount)} for Transaction ${targetPayment.transactionId} has been initiated.`
+      );
+    }
+
+    alert(`Refund processed for ${targetPayment.transactionId}.`);
+  };
 
   const handleApproveKyc = (userId) => {
     const userToApprove = pendingKycUsers.find(u => u.id === userId);
@@ -120,14 +212,6 @@ export default function AdminDashboard({ properties, setProperties, bookings, co
     alert(`Review has been rejected.`);
   };
 
-  const formatBDT = (value) => {
-    return new Intl.NumberFormat('en-BD', {
-      style: 'currency',
-      currency: 'BDT',
-      maximumFractionDigits: 0
-    }).format(value);
-  };
-
   return (
     <div className="container animate-fade-in" style={{ paddingBottom: '80px', marginTop: '40px' }}>
       <h1 style={{ fontSize: '2.5rem', marginBottom: '8px' }}>Admin Console</h1>
@@ -135,6 +219,9 @@ export default function AdminDashboard({ properties, setProperties, bookings, co
 
       {/* Tabs Menu */}
       <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', flexWrap: 'wrap' }}>
+        <button onClick={() => setActiveTab('payments')} className={`btn ${activeTab === 'payments' ? 'btn-primary' : 'btn-secondary'}`}>
+          <CreditCard size={16} /> Payments & Revenue ({payments.length})
+        </button>
         <button onClick={() => setActiveTab('kyc')} className={`btn ${activeTab === 'kyc' ? 'btn-primary' : 'btn-secondary'}`}>
           KYC Verifications ({pendingKycUsers.length})
         </button>
@@ -157,6 +244,311 @@ export default function AdminDashboard({ properties, setProperties, bookings, co
           System Reports
         </button>
       </div>
+
+      {/* Tab: Payments & Escrow */}
+      {activeTab === 'payments' && (
+        <div className="glass animate-fade-in" style={{ padding: '32px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+            <div>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <CreditCard style={{ color: 'var(--primary)' }} /> Real-Time Payments & Escrow Desk
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
+                Monitor transactions, verify bank deposits, and manage buyer-owner disbursements.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => window.print()} className="btn btn-secondary" style={{ fontSize: '0.85rem' }}>
+                <Printer size={16} /> Print Report
+              </button>
+            </div>
+          </div>
+
+          {/* Metric Cards */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '16px',
+            marginBottom: '32px'
+          }}>
+            <div style={{ padding: '20px', background: 'rgba(204, 163, 83, 0.08)', border: '1px solid rgba(204, 163, 83, 0.25)', borderRadius: '16px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Total Collected (BDT)</span>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary)', marginTop: '6px' }}>
+                {formatBDT(payments.filter(p => p.status === 'COMPLETED').reduce((acc, curr) => acc + (curr.amount || 0), 0))}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}>
+                ● {payments.filter(p => p.status === 'COMPLETED').length} Successful transactions
+              </span>
+            </div>
+
+            <div style={{ padding: '20px', background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '16px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Pending Verification</span>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f59e0b', marginTop: '6px' }}>
+                {formatBDT(payments.filter(p => p.status === 'PENDING').reduce((acc, curr) => acc + (curr.amount || 0), 0))}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: 600 }}>
+                ● {payments.filter(p => p.status === 'PENDING').length} Awaiting bank reconciliation
+              </span>
+            </div>
+
+            <div style={{ padding: '20px', background: 'rgba(99, 102, 241, 0.08)', border: '1px solid rgba(99, 102, 241, 0.25)', borderRadius: '16px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>bKash & Nagad Share</span>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#818cf8', marginTop: '6px' }}>
+                {payments.filter(p => p.paymentMethod === 'BKASH' || p.paymentMethod === 'NAGAD' || p.paymentMethod === 'ROCKET').length} Txns
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                Mobile Financial Services
+              </span>
+            </div>
+
+            <div style={{ padding: '20px', background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '16px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Platform Success Rate</span>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#10b981', marginTop: '6px' }}>
+                {payments.length > 0 ? ((payments.filter(p => p.status === 'COMPLETED').length / payments.length) * 100).toFixed(0) : 100}%
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                SSL & Gateway Uptime
+              </span>
+            </div>
+          </div>
+
+          {/* Search & Filters */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '2fr 1fr 1fr',
+            gap: '12px',
+            marginBottom: '20px'
+          }}>
+            <div style={{ position: 'relative' }}>
+              <Search size={16} style={{ position: 'absolute', left: '14px', top: '14px', color: 'var(--text-dark)' }} />
+              <input
+                type="text"
+                placeholder="Search by Transaction ID, Buyer name, or Property title..."
+                className="input-field"
+                style={{ paddingLeft: '40px' }}
+                value={paymentSearchQuery}
+                onChange={(e) => setPaymentSearchQuery(e.target.value)}
+              />
+            </div>
+
+            <select
+              className="input-field"
+              value={paymentStatusFilter}
+              onChange={(e) => setPaymentStatusFilter(e.target.value)}
+            >
+              <option value="ALL">All Statuses</option>
+              <option value="COMPLETED">Completed (Paid)</option>
+              <option value="PENDING">Pending (Bank Transfer)</option>
+              <option value="REFUNDED">Refunded</option>
+            </select>
+
+            <select
+              className="input-field"
+              value={paymentMethodFilter}
+              onChange={(e) => setPaymentMethodFilter(e.target.value)}
+            >
+              <option value="ALL">All Methods</option>
+              <option value="BKASH">bKash</option>
+              <option value="NAGAD">Nagad</option>
+              <option value="ROCKET">Rocket</option>
+              <option value="CARD">Debit/Credit Card</option>
+              <option value="BANK">Bank Deposit / EFT</option>
+            </select>
+          </div>
+
+          {/* Payments Table */}
+          {payments.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+              No payment transactions logged yet.
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
+                    <th style={{ padding: '12px 14px' }}>Txn ID / Date</th>
+                    <th style={{ padding: '12px 14px' }}>Buyer Info</th>
+                    <th style={{ padding: '12px 14px' }}>Property</th>
+                    <th style={{ padding: '12px 14px' }}>Amount</th>
+                    <th style={{ padding: '12px 14px' }}>Method</th>
+                    <th style={{ padding: '12px 14px' }}>Status</th>
+                    <th style={{ padding: '12px 14px', textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payments
+                    .filter((p) => {
+                      const matchesSearch = 
+                        (p.transactionId?.toLowerCase() || '').includes(paymentSearchQuery.toLowerCase()) ||
+                        (p.buyerName?.toLowerCase() || '').includes(paymentSearchQuery.toLowerCase()) ||
+                        (p.propertyTitle?.toLowerCase() || '').includes(paymentSearchQuery.toLowerCase());
+                      const matchesStatus = paymentStatusFilter === 'ALL' ? true : p.status === paymentStatusFilter;
+                      const matchesMethod = paymentMethodFilter === 'ALL' ? true : p.paymentMethod === paymentMethodFilter;
+                      return matchesSearch && matchesStatus && matchesMethod;
+                    })
+                    .map((p) => (
+                      <tr key={p.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', transition: 'background 0.2s' }}>
+                        <td style={{ padding: '14px' }}>
+                          <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--primary)', display: 'block' }}>
+                            {p.transactionId}
+                          </span>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            {new Date(p.createdAt).toLocaleDateString('en-BD')} {new Date(p.createdAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </td>
+                        <td style={{ padding: '14px' }}>
+                          <strong style={{ color: '#ffffff', display: 'block' }}>{p.buyerName}</strong>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            {p.buyerPhone || p.buyerEmail}
+                          </span>
+                        </td>
+                        <td style={{ padding: '14px', maxWidth: '200px' }}>
+                          <span style={{ fontWeight: 600, color: '#ffffff', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {p.propertyTitle}
+                          </span>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                            {p.propertyCity} • {p.paymentType?.replace('_', ' ')}
+                          </span>
+                        </td>
+                        <td style={{ padding: '14px' }}>
+                          <strong style={{ fontSize: '0.95rem', color: 'var(--primary)' }}>
+                            {formatBDT(p.amount)}
+                          </strong>
+                        </td>
+                        <td style={{ padding: '14px' }}>
+                          <span style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            padding: '4px 8px',
+                            borderRadius: '6px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            background: p.paymentMethod === 'BKASH' ? 'rgba(226, 19, 110, 0.15)' :
+                                        p.paymentMethod === 'NAGAD' ? 'rgba(247, 148, 29, 0.15)' :
+                                        p.paymentMethod === 'CARD' ? 'rgba(59, 130, 246, 0.15)' :
+                                        'rgba(16, 185, 129, 0.15)',
+                            color: p.paymentMethod === 'BKASH' ? '#f472b6' :
+                                   p.paymentMethod === 'NAGAD' ? '#fb923c' :
+                                   p.paymentMethod === 'CARD' ? '#60a5fa' :
+                                   '#34d399'
+                          }}>
+                            {p.paymentMethod}
+                          </span>
+                          {p.paymentMeta?.bankTxnRef && (
+                            <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                              Ref: {p.paymentMeta.bankTxnRef}
+                            </span>
+                          )}
+                        </td>
+                        <td style={{ padding: '14px' }}>
+                          <span style={{
+                            padding: '4px 10px',
+                            borderRadius: '8px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            background: p.status === 'COMPLETED' ? 'rgba(16, 185, 129, 0.15)' :
+                                        p.status === 'PENDING' ? 'rgba(245, 158, 11, 0.15)' :
+                                        'rgba(239, 68, 68, 0.15)',
+                            color: p.status === 'COMPLETED' ? '#10b981' :
+                                   p.status === 'PENDING' ? '#f59e0b' :
+                                   '#ef4444'
+                          }}>
+                            {p.status}
+                          </span>
+                        </td>
+                        <td style={{ padding: '14px', textAlign: 'right' }}>
+                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                            {p.status === 'PENDING' && (
+                              <button
+                                onClick={() => handleApprovePayment(p.id)}
+                                className="btn"
+                                style={{ background: 'var(--secondary)', color: '#ffffff', padding: '6px 12px', fontSize: '0.75rem' }}
+                                title="Verify bank deposit"
+                              >
+                                <Check size={14} /> Verify
+                              </button>
+                            )}
+                            {p.status === 'COMPLETED' && (
+                              <button
+                                onClick={() => handleRefundPayment(p.id)}
+                                className="btn-danger"
+                                style={{ padding: '6px 10px', fontSize: '0.75rem' }}
+                                title="Issue refund"
+                              >
+                                Refund
+                              </button>
+                            )}
+                            <button
+                              onClick={() => setSelectedReceipt(p)}
+                              className="btn-secondary"
+                              style={{ padding: '6px 10px', fontSize: '0.75rem' }}
+                              title="View digital voucher"
+                            >
+                              Voucher
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Receipt Modal Preview */}
+          {selectedReceipt && (
+            <div style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'rgba(0,0,0,0.8)',
+              backdropFilter: 'blur(8px)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 99999,
+              padding: '20px'
+            }}>
+              <div className="glass animate-fade-in" style={{
+                background: '#0e1526',
+                width: '100%',
+                maxWidth: '480px',
+                padding: '30px',
+                borderRadius: '20px',
+                border: '1px solid rgba(255,255,255,0.15)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>Payment Voucher Details</h3>
+                  <button onClick={() => setSelectedReceipt(null)} style={{ background: 'none', border: 'none', color: '#ffffff', cursor: 'pointer' }}>
+                    <XCircle size={20} />
+                  </button>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '12px', border: '1px solid var(--border-color)', marginBottom: '20px' }}>
+                  <p style={{ margin: '6px 0', fontSize: '0.85rem' }}><strong>Txn ID:</strong> <span style={{ color: 'var(--primary)', fontFamily: 'monospace' }}>{selectedReceipt.transactionId}</span></p>
+                  <p style={{ margin: '6px 0', fontSize: '0.85rem' }}><strong>Property:</strong> {selectedReceipt.propertyTitle}</p>
+                  <p style={{ margin: '6px 0', fontSize: '0.85rem' }}><strong>Payer:</strong> {selectedReceipt.buyerName} ({selectedReceipt.buyerPhone})</p>
+                  <p style={{ margin: '6px 0', fontSize: '0.85rem' }}><strong>Amount:</strong> <strong style={{ color: 'var(--primary)' }}>{formatBDT(selectedReceipt.amount)}</strong></p>
+                  <p style={{ margin: '6px 0', fontSize: '0.85rem' }}><strong>Method:</strong> {selectedReceipt.paymentMethod}</p>
+                  <p style={{ margin: '6px 0', fontSize: '0.85rem' }}><strong>Status:</strong> {selectedReceipt.status}</p>
+                  <p style={{ margin: '6px 0', fontSize: '0.85rem' }}><strong>Date:</strong> {new Date(selectedReceipt.createdAt).toLocaleString('en-BD')}</p>
+                  {selectedReceipt.note && <p style={{ margin: '6px 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}><strong>Note:</strong> {selectedReceipt.note}</p>}
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button onClick={() => window.print()} className="btn btn-secondary" style={{ flex: 1 }}>
+                    <Printer size={16} /> Print Voucher
+                  </button>
+                  <button onClick={() => setSelectedReceipt(null)} className="btn btn-primary" style={{ flex: 1 }}>
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Tab: KYC */}
       {activeTab === 'kyc' && (
