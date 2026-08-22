@@ -451,13 +451,15 @@ export default function App() {
       <Navbar user={user} onLogout={handleLogout} notifications={notifications} setNotifications={setNotifications} wishlist={wishlist} />
       <Routes>
         <Route path="/" element={
-          <Home 
-            properties={properties} 
-            wishlist={wishlist} 
-            onToggleWishlist={handleToggleWishlist}
-            compareList={compareList}
-            onToggleCompare={handleToggleCompare}
-          />
+          user ? (
+            <Home 
+              properties={properties} 
+              wishlist={wishlist} 
+              onToggleWishlist={handleToggleWishlist}
+              compareList={compareList}
+              onToggleCompare={handleToggleCompare}
+            />
+          ) : <Navigate to="/login" />
         } />
         
         <Route path="/login" element={
@@ -465,21 +467,23 @@ export default function App() {
         } />
         
         <Route path="/register" element={
-          user ? <Navigate to="/" /> : <Register onLogin={(data) => handleLogin(data, true)} />
+          user ? <Navigate to="/" /> : <Login onLogin={(data) => handleLogin(data, true)} />
         } />
         
         <Route path="/property/:id" element={
-          <PropertyDetails 
-            user={user}
-            properties={properties} 
-            bookings={bookings}
-            setBookings={setBookings}
-            payments={payments}
-            onAddPayment={handleAddPayment}
-            reviews={reviews}
-            setReviews={setReviews}
-            triggerNotification={triggerNotification}
-          />
+          user ? (
+            <PropertyDetails 
+              user={user}
+              properties={properties} 
+              bookings={bookings}
+              setBookings={setBookings}
+              payments={payments}
+              onAddPayment={handleAddPayment}
+              reviews={reviews}
+              setReviews={setReviews}
+              triggerNotification={triggerNotification}
+            />
+          ) : <Navigate to="/login" />
         } />
 
         <Route path="/wishlist" element={
@@ -496,30 +500,36 @@ export default function App() {
         } />
 
         <Route path="/compare" element={
-          <Compare 
-            compareList={compareList} 
-            onRemove={handleToggleCompare} 
-          />
+          user ? (
+            <Compare 
+              compareList={compareList} 
+              onRemove={handleToggleCompare} 
+            />
+          ) : <Navigate to="/login" />
         } />
 
-        <Route path="/calculator" element={<MortgageCalculator />} />
+        <Route path="/calculator" element={
+          user ? <MortgageCalculator /> : <Navigate to="/login" />
+        } />
 
         <Route path="/listings" element={
-          <Listings
-            properties={properties}
-            wishlist={wishlist}
-            onToggleWishlist={handleToggleWishlist}
-            compareList={compareList}
-            onToggleCompare={handleToggleCompare}
-          />
+          user ? (
+            <Listings
+              properties={properties}
+              wishlist={wishlist}
+              onToggleWishlist={handleToggleWishlist}
+              compareList={compareList}
+              onToggleCompare={handleToggleCompare}
+            />
+          ) : <Navigate to="/login" />
         } />
 
         <Route path="/map" element={
-          <MapView properties={properties} />
+          user ? <MapView properties={properties} /> : <Navigate to="/login" />
         } />
 
         <Route path="/predict" element={
-          <PricePrediction properties={properties} />
+          user ? <PricePrediction properties={properties} /> : <Navigate to="/login" />
         } />
 
         <Route path="/chat" element={
@@ -582,7 +592,7 @@ export default function App() {
           ) : <Navigate to="/" />
         } />
       </Routes>
-      <AIChatbot />
+      {user && <AIChatbot />}
     </Router>
   );
 }

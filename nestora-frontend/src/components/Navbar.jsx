@@ -4,6 +4,8 @@ import {
   Compass, LayoutGrid, Map, BrainCircuit, User, LogOut, CheckCircle, 
   BarChart3, GitCompare, Bell, Heart, Calculator, MessageSquare, Menu, X, ShieldCheck
 } from 'lucide-react';
+import MobileDrawer from './MobileDrawer';
+import NestoraLogo from './NestoraLogo';
 
 export default function Navbar({ user, onLogout, notifications = [], setNotifications, wishlist = [] }) {
   const navigate = useNavigate();
@@ -46,35 +48,23 @@ export default function Navbar({ user, onLogout, notifications = [], setNotifica
         border: '1px solid var(--border-color)',
         borderRadius: '16px'
       }}>
-        {/* Brand Logo */}
+        {/* Official Brand Logo */}
         <Link 
           to="/" 
           onClick={() => setMobileMenuOpen(false)}
-          style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
+          style={{ display: 'flex', alignItems: 'center' }}
         >
-          <div style={{
-            width: '36px',
-            height: '36px',
-            background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
-            borderRadius: '10px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 800,
-            color: '#0b0f19',
-            fontSize: '1.25rem',
-            fontFamily: 'var(--font-accent)'
-          }}>N</div>
-          <span style={{
-            fontSize: '1.35rem',
-            fontWeight: 800,
-            letterSpacing: '-0.5px',
-            fontFamily: 'var(--font-accent)',
-            background: 'linear-gradient(to right, #ffffff, var(--primary))',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}>Nestora</span>
+          <NestoraLogo size={36} showText={true} />
         </Link>
+
+        {/* 📱 MOBILE HAMBURGER MENU */}
+        <div className="mobile-only" style={{ display: 'flex', alignItems: 'center' }}>
+          <div className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
 
         {/* 🖥️ DESKTOP MENU LINKS */}
         <div className="desktop-only" style={{ alignItems: 'center', gap: '14px' }}>
@@ -360,227 +350,10 @@ export default function Navbar({ user, onLogout, notifications = [], setNotifica
             </Link>
           )}
         </div>
-
-        {/* 📱 MOBILE TOP HEADER ACTIONS (Notification, Avatar & Drawer Toggle) */}
-        <div className="mobile-only" style={{ alignItems: 'center', gap: '10px' }}>
-          {/* Notification icon on mobile */}
-          {user && (
-            <button 
-              onClick={() => setShowNotifs(!showNotifs)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--text-main)',
-                padding: '6px',
-                position: 'relative',
-                cursor: 'pointer'
-              }}
-            >
-              <Bell size={20} />
-              {unreadCount > 0 && (
-                <span style={{
-                  position: 'absolute',
-                  top: '0',
-                  right: '0',
-                  background: 'var(--danger)',
-                  color: '#ffffff',
-                  fontSize: '0.6rem',
-                  fontWeight: 800,
-                  width: '15px',
-                  height: '15px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-          )}
-
-          {/* User Avatar on Mobile */}
-          {user ? (
-            <Link to={getDashboardPath()} style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, var(--primary), var(--primary-hover))',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '0.85rem',
-              fontWeight: 800,
-              color: '#0b0f19'
-            }}>
-              {(user.fullName || 'U')[0].toUpperCase()}
-            </Link>
-          ) : (
-            <Link to="/login" className="btn btn-primary" style={{ padding: '6px 12px', fontSize: '0.8rem' }}>
-              Sign In
-            </Link>
-          )}
-
-          {/* Hamburger Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            style={{
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid var(--border-color)',
-              color: 'var(--text-main)',
-              padding: '7px',
-              borderRadius: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer'
-            }}
-          >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
       </nav>
 
-      {/* ========================================================
-          📱 MOBILE FULLSCREEN SLIDE-OUT DRAWER MENU
-          ======================================================== */}
-      {mobileMenuOpen && (
-        <div style={{
-          position: 'fixed',
-          top: '72px',
-          left: '12px',
-          right: '12px',
-          bottom: '84px',
-          background: 'rgba(11, 15, 25, 0.96)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          borderRadius: '20px',
-          padding: '20px',
-          zIndex: 9995,
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.8)'
-        }} className="animate-fade-in">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <span style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
-              Menu & Tools
-            </span>
-            
-            <Link 
-              to="/" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-secondary" 
-              style={{ padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-start' }}
-            >
-              <Compass size={18} style={{ color: 'var(--primary)' }} /> Explore Marketplace
-            </Link>
-
-            <Link 
-              to="/listings" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-secondary" 
-              style={{ padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-start' }}
-            >
-              <LayoutGrid size={18} style={{ color: 'var(--primary)' }} /> All Property Listings
-            </Link>
-
-            <Link 
-              to="/map" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-secondary" 
-              style={{ padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-start' }}
-            >
-              <Map size={18} style={{ color: 'var(--primary)' }} /> Interactive Map Search
-            </Link>
-
-            <Link 
-              to="/compare" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-secondary" 
-              style={{ padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-start' }}
-            >
-              <GitCompare size={18} style={{ color: 'var(--accent)' }} /> Property Comparison
-            </Link>
-
-            <Link 
-              to="/calculator" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-secondary" 
-              style={{ padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-start' }}
-            >
-              <Calculator size={18} style={{ color: 'var(--secondary)' }} /> Mortgage EMI Calculator
-            </Link>
-
-            <Link 
-              to="/predict" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="btn-secondary" 
-              style={{ padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-start' }}
-            >
-              <BrainCircuit size={18} style={{ color: '#818cf8' }} /> AI Price Prediction
-            </Link>
-
-            {user && (
-              <>
-                <Link 
-                  to="/chat" 
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="btn-secondary" 
-                  style={{ padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-start' }}
-                >
-                  <MessageSquare size={18} style={{ color: 'var(--primary)' }} /> Direct Chat
-                </Link>
-
-                <Link 
-                  to="/wishlist" 
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="btn-secondary" 
-                  style={{ padding: '12px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'flex-start' }}
-                >
-                  <Heart size={18} style={{ color: '#ef4444' }} /> Saved Wishlist ({wishlist.length})
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* User Info & Logout at bottom of drawer */}
-          <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '16px', marginTop: '16px' }}>
-            {user ? (
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <h4 style={{ fontSize: '0.95rem', fontWeight: 800, margin: 0 }}>{user.fullName}</h4>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--primary)', textTransform: 'uppercase', fontWeight: 600 }}>
-                    {user.role}
-                  </span>
-                </div>
-                <button
-                  onClick={() => {
-                    onLogout();
-                    setMobileMenuOpen(false);
-                    navigate('/');
-                  }}
-                  className="btn-danger"
-                  style={{ padding: '8px 14px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '6px' }}
-                >
-                  <LogOut size={14} /> Logout
-                </button>
-              </div>
-            ) : (
-              <Link 
-                to="/login" 
-                onClick={() => setMobileMenuOpen(false)}
-                className="btn btn-primary" 
-                style={{ width: '100%', padding: '12px' }}
-              >
-                Sign In / Register
-              </Link>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Mobile Drawer */}
+      <MobileDrawer open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
 
       {/* ========================================================
           📱 NATIVE MOBILE BOTTOM APP DOCK (Navigation Bar)

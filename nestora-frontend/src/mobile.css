@@ -1,0 +1,61 @@
+/* Mobile‑first base styling */
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--bg-gradient, linear-gradient(135deg, #f0f4ff, #e0eaff));
+}
+
+/* Hamburger button */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+.hamburger div {
+  width: 100%;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+}
+
+/* Mobile drawer */
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  width: 250px;
+  height: 100vh;
+  background: #0b0f19;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-right: 1px solid var(--border-color);
+  transition: left 0.3s ease;
+  z-index: 1000;
+  padding: 20px;
+  overflow-y: auto;
+}
+.mobile-drawer.open { left: 0; }
+.mobile-drawer button.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-main);
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+.mobile-drawer nav ul {
+  list-style: none;
+  padding: 0;
+}
+.mobile-drawer nav li {
+  margin: 12px 0;
+}
+.mobile-drawer nav a {
+  color: var(--text-main);
+  font-size: 1rem;
+  text-decoration: none;
+}
