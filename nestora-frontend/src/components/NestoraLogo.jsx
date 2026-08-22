@@ -158,24 +158,23 @@ export default function NestoraLogo({ size = 44, showText = true, subtitle = fal
           textAlign: stacked ? 'center' : 'left'
         }}>
           <span style={{
-            fontSize: size >= 60 ? '2.4rem' : (size >= 40 ? '1.5rem' : '1.2rem'),
+            fontSize: size >= 60 ? '2.4rem' : (size >= 40 ? '1.5rem' : '1.25rem'),
             fontWeight: 900,
             letterSpacing: '-0.5px',
             fontFamily: 'var(--font-accent)',
-            color: '#ffffff',
-            lineHeight: 1.1,
-            textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)'
+            color: '#0c2340',
+            lineHeight: 1.1
           }}>
             Nestora
           </span>
           
           {subtitle && (
             <span style={{
-              fontSize: size >= 60 ? '0.95rem' : '0.72rem',
+              fontSize: size >= 60 ? '0.92rem' : '0.72rem',
               fontWeight: 700,
-              color: 'var(--primary-light)',
-              letterSpacing: '0.04em',
-              marginTop: '4px'
+              color: '#0c2340',
+              letterSpacing: '0.02em',
+              marginTop: '6px'
             }}>
               Smart Real Estate Management Platform
             </span>

@@ -34,9 +34,9 @@ export default function MobileDrawer({ open, onClose }) {
           left: open ? 0 : '-300px',
           width: '280px',
           height: '100vh',
-          background: '#0b0f19',
-          borderRight: '1px solid rgba(245, 158, 11, 0.25)',
-          boxShadow: '10px 0 40px rgba(0, 0, 0, 0.8)',
+          background: '#ffffff',
+          borderRight: '1px solid #e2e8f0',
+          boxShadow: '10px 0 40px rgba(0, 0, 0, 0.15)',
           zIndex: 9999,
           padding: '24px 20px',
           display: 'flex',
@@ -53,9 +53,9 @@ export default function MobileDrawer({ open, onClose }) {
             <button 
               onClick={onClose} 
               style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                border: '1px solid var(--border-color)',
-                color: 'var(--text-main)',
+                background: '#f1f5f9',
+                border: '1px solid #cbd5e1',
+                color: '#0c2340',
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',

@@ -63,13 +63,14 @@ export default function Login({ onLogin }) {
   const handleQuickLogin = (presetEmail, presetRole, presetName, presetId) => {
     setLoading(true);
     setTimeout(() => {
-      onLogin({
+      const userData = {
         id: presetId,
         fullName: presetName,
         email: presetEmail,
         role: presetRole,
         isVerified: true
-      });
+      };
+      onLogin(userData);
       setLoading(false);
       navigate('/');
     }, 500);
@@ -81,46 +82,48 @@ export default function Login({ onLogin }) {
       justifyContent: 'center',
       alignItems: 'center',
       minHeight: 'calc(100vh - 120px)',
-      padding: '24px 0'
+      padding: '30px 16px'
     }}>
+      {/* 🏛️ Clean Luxury White Card */}
       <div className="glass animate-fade-in" style={{
         width: '100%',
         maxWidth: '480px',
-        padding: '36px 32px',
+        padding: '40px 36px',
         borderRadius: '24px',
-        background: 'rgba(10, 25, 47, 0.92)',
-        border: '1px solid rgba(197, 155, 39, 0.25)',
-        boxShadow: '0 25px 60px rgba(0, 0, 0, 0.85)'
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
+        boxShadow: '0 20px 50px rgba(12, 35, 64, 0.08)'
       }}>
         {/* Official Brand Logo */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '24px', textAlign: 'center' }}>
-          <NestoraLogo size={110} showText={true} subtitle={true} stacked={true} />
+          <NestoraLogo size={105} showText={true} subtitle={true} stacked={true} />
           <div style={{
             height: '1px',
-            width: '80%',
-            background: 'linear-gradient(90deg, transparent, rgba(197, 155, 39, 0.35), transparent)',
+            width: '85%',
+            background: 'linear-gradient(90deg, transparent, #cbd5e1, transparent)',
             margin: '20px auto 16px'
           }} />
-          <h2 style={{ fontSize: '1.4rem', marginBottom: '4px', color: '#ffffff' }}>
+          <h2 style={{ fontSize: '1.45rem', marginBottom: '4px', color: '#0c2340', fontWeight: 800 }}>
             Account Sign In
           </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+          <p style={{ color: '#64748b', fontSize: '0.88rem', fontWeight: 500 }}>
             Enter your credentials to unlock full marketplace access
           </p>
         </div>
 
         {error && (
           <div style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
+            background: '#fee2e2',
+            border: '1px solid #fca5a5',
             borderRadius: '12px',
-            color: '#fca5a5',
+            color: '#b91c1c',
             padding: '12px 14px',
             fontSize: '0.85rem',
             marginBottom: '20px',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px'
+            gap: '8px',
+            fontWeight: 600
           }}>
             <span>⚠️</span> {error}
           </div>
@@ -131,7 +134,7 @@ export default function Login({ onLogin }) {
           <div className="input-group">
             <label className="input-label">Full Name (আপনার নাম)</label>
             <div style={{ position: 'relative' }}>
-              <User size={18} style={{ position: 'absolute', left: '16px', top: '15px', color: 'var(--text-dark)' }} />
+              <User size={18} style={{ position: 'absolute', left: '16px', top: '15px', color: '#64748b' }} />
               <input
                 type="text"
                 className="input-field"
@@ -147,7 +150,7 @@ export default function Login({ onLogin }) {
           <div className="input-group">
             <label className="input-label">Email Address (ইমেইল এড্রেস)</label>
             <div style={{ position: 'relative' }}>
-              <Mail size={18} style={{ position: 'absolute', left: '16px', top: '15px', color: 'var(--text-dark)' }} />
+              <Mail size={18} style={{ position: 'absolute', left: '16px', top: '15px', color: '#64748b' }} />
               <input
                 type="email"
                 className="input-field"
@@ -164,7 +167,7 @@ export default function Login({ onLogin }) {
           <div className="input-group" style={{ marginBottom: '20px' }}>
             <label className="input-label">Password (পাসওয়ার্ড)</label>
             <div style={{ position: 'relative' }}>
-              <Lock size={18} style={{ position: 'absolute', left: '16px', top: '15px', color: 'var(--text-dark)' }} />
+              <Lock size={18} style={{ position: 'absolute', left: '16px', top: '15px', color: '#64748b' }} />
               <input
                 type="password"
                 className="input-field"
@@ -179,7 +182,7 @@ export default function Login({ onLogin }) {
 
           {/* Role Selection Chips */}
           <div style={{ marginBottom: '24px' }}>
-            <label className="input-label" style={{ fontSize: '0.75rem' }}>Select Role / Account Type</label>
+            <label className="input-label" style={{ fontSize: '0.78rem' }}>Select Role / Account Type</label>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
               {[
                 { id: 'BUYER', label: 'Buyer / Client' },
@@ -191,15 +194,16 @@ export default function Login({ onLogin }) {
                   type="button"
                   onClick={() => setRole(r.id)}
                   style={{
-                    padding: '8px 4px',
+                    padding: '9px 4px',
                     borderRadius: '10px',
-                    fontSize: '0.75rem',
+                    fontSize: '0.76rem',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    background: role === r.id ? 'rgba(204, 163, 83, 0.15)' : 'rgba(255,255,255,0.03)',
-                    border: role === r.id ? '2px solid var(--primary)' : '1px solid var(--border-color)',
-                    color: role === r.id ? 'var(--primary)' : 'var(--text-muted)',
-                    transition: 'all 0.2s'
+                    background: role === r.id ? 'rgba(197, 155, 39, 0.15)' : '#ffffff',
+                    border: role === r.id ? '2px solid var(--primary)' : '1px solid #cbd5e1',
+                    color: role === r.id ? '#0c2340' : '#64748b',
+                    transition: 'all 0.2s',
+                    boxShadow: role === r.id ? '0 2px 8px rgba(197,155,39,0.2)' : 'none'
                   }}
                 >
                   {r.label}
@@ -213,7 +217,7 @@ export default function Login({ onLogin }) {
             type="submit" 
             disabled={loading} 
             className="btn btn-primary" 
-            style={{ width: '100%', height: '50px', fontSize: '1rem', fontWeight: 800 }}
+            style={{ width: '100%', height: '50px', fontSize: '1rem', fontWeight: 800, borderRadius: '12px' }}
           >
             {loading ? (
               <RefreshCw className="spinner" size={20} style={{ animation: 'spin 1s linear infinite' }} />
@@ -230,12 +234,12 @@ export default function Login({ onLogin }) {
           marginTop: '28px',
           padding: '16px',
           borderRadius: '14px',
-          background: 'rgba(255, 255, 255, 0.02)',
-          border: '1px dashed rgba(204, 163, 83, 0.3)'
+          background: '#f8fafc',
+          border: '1px solid #e2e8f0'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
             <Sparkles size={14} style={{ color: 'var(--primary)' }} />
-            <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--primary)' }}>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#0c2340', letterSpacing: '0.04em' }}>
               1-Click Demo Logins for Review
             </span>
           </div>
@@ -247,12 +251,13 @@ export default function Login({ onLogin }) {
               style={{
                 padding: '8px',
                 borderRadius: '8px',
-                background: 'rgba(99, 102, 241, 0.1)',
-                border: '1px solid rgba(99, 102, 241, 0.3)',
-                color: '#818cf8',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#1e3a8a',
                 fontSize: '0.75rem',
                 fontWeight: 700,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
               }}
             >
               👑 Admin
@@ -263,12 +268,13 @@ export default function Login({ onLogin }) {
               style={{
                 padding: '8px',
                 borderRadius: '8px',
-                background: 'rgba(16, 185, 129, 0.1)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                color: '#34d399',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#166534',
                 fontSize: '0.75rem',
                 fontWeight: 700,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
               }}
             >
               🏢 Owner
@@ -279,12 +285,13 @@ export default function Login({ onLogin }) {
               style={{
                 padding: '8px',
                 borderRadius: '8px',
-                background: 'rgba(204, 163, 83, 0.1)',
-                border: '1px solid rgba(204, 163, 83, 0.3)',
-                color: 'var(--primary)',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#b45309',
                 fontSize: '0.75rem',
                 fontWeight: 700,
-                cursor: 'pointer'
+                cursor: 'pointer',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
               }}
             >
               🛍️ Buyer

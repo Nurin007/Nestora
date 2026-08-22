@@ -273,10 +273,11 @@ export default function Navbar({ user, onLogout, notifications = [], setNotifica
                     zIndex: 2000,
                     padding: '16px',
                     boxShadow: 'var(--shadow-lg)',
-                    background: '#0e1526'
+                    background: '#ffffff',
+                    border: '1px solid #e2e8f0'
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
-                      <h4 style={{ margin: 0, fontSize: '0.85rem' }}>Notifications</h4>
+                      <h4 style={{ margin: 0, fontSize: '0.85rem', color: '#0c2340' }}>Notifications</h4>
                       {unreadCount > 0 && (
                         <button 
                           onClick={() => {
@@ -299,12 +300,12 @@ export default function Navbar({ user, onLogout, notifications = [], setNotifica
                             style={{
                               padding: '10px',
                               borderRadius: '8px',
-                              background: n.isRead ? 'rgba(255,255,255,0.02)' : 'rgba(204, 163, 83, 0.08)',
-                              border: '1px solid var(--border-color)',
+                              background: n.isRead ? '#f8fafc' : '#fef3c7',
+                              border: '1px solid #e2e8f0',
                               textAlign: 'left'
                             }}
                           >
-                            <h5 style={{ margin: '0 0 4px 0', fontSize: '0.8rem', fontWeight: 700, color: n.isRead ? 'var(--text-muted)' : '#ffffff' }}>{n.title}</h5>
+                            <h5 style={{ margin: '0 0 4px 0', fontSize: '0.8rem', fontWeight: 700, color: n.isRead ? 'var(--text-muted)' : '#0c2340' }}>{n.title}</h5>
                             <p style={{ margin: 0, fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>{n.content}</p>
                           </div>
                         ))}
