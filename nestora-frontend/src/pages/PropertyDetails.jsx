@@ -730,6 +730,54 @@ export default function PropertyDetails({ user, properties, bookings, setBooking
 
       </div>
 
+      {/* Fixed Mobile Bottom Action Bar (always visible at bottom on phones) */}
+      <div className="mobile-only" style={{
+        position: 'fixed',
+        bottom: '68px',
+        left: '16px',
+        right: '16px',
+        zIndex: 9980,
+        background: 'rgba(12, 35, 64, 0.95)',
+        backdropFilter: 'blur(16px)',
+        border: '1.5px solid var(--primary)',
+        borderRadius: '16px',
+        padding: '12px 16px',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '12px'
+      }}>
+        <div>
+          <div style={{ fontSize: '0.72rem', color: '#94a3b8', fontWeight: 600 }}>Asking Price</div>
+          <div style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--primary)' }}>
+            {formatBDT(property.pricing)}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            setPaymentModalType('BOOKING_ADVANCE');
+            setIsPaymentOpen(true);
+          }}
+          className="btn btn-primary"
+          style={{
+            padding: '10px 16px',
+            borderRadius: '10px',
+            fontWeight: 800,
+            fontSize: '0.85rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          <CreditCard size={15} />
+          Pay Advance
+        </button>
+      </div>
+
       {/* Payment Gateway Modal */}
       <PaymentModal
         isOpen={isPaymentOpen}

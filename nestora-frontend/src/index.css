@@ -356,6 +356,7 @@ a {
   }
   .property-details-layout > div:last-child {
     position: static !important;
+    order: -1 !important; /* Pushes Payment & Booking Card right to the top above reviews! */
   }
 
   .buyer-dashboard-layout {
