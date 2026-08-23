@@ -235,24 +235,23 @@ export default function PaymentModal({
       inset: 0,
       width: '100%',
       height: '100%',
-      backgroundColor: 'rgba(5, 8, 16, 0.85)',
-      backdropFilter: 'blur(8px)',
-      WebkitBackdropFilter: 'blur(8px)',
+      backgroundColor: 'rgba(5, 8, 16, 0.65)',
+      backdropFilter: 'blur(4px)',
+      WebkitBackdropFilter: 'blur(4px)',
       zIndex: 999999,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '20px',
-      overflowY: 'auto'
+      padding: '12px'
     }}>
       <div className="glass animate-fade-in" style={{
         width: '100%',
-        maxWidth: step === 4 ? '580px' : '500px',
+        maxWidth: step === 4 ? '540px' : '460px',
         maxHeight: '92vh',
-        background: '#0e1526',
-        borderRadius: '24px',
-        border: '1.5px solid rgba(204, 163, 83, 0.4)',
-        boxShadow: '0 25px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(204, 163, 83, 0.15)',
+        background: '#0c1527',
+        borderRadius: '20px',
+        border: '1.5px solid rgba(204, 163, 83, 0.5)',
+        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.85)',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column'
