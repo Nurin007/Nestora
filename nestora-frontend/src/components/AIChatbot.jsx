@@ -23,24 +23,36 @@ export default function AIChatbot() {
     const query = input.toLowerCase();
     setInput('');
 
-    // Generate intelligent AI response mock
+    // Generate intelligent AI response
     setTimeout(() => {
-      let botResponse = "I'm analyzing that request. For premium locations like Gulshan and Banani, square feet rates currently range between BDT 14,000 to BDT 22,000. For agriculture/land near Gazipur, expectation is around BDT 4-6 Million per decimal. How else can I assist you?";
-      
-      if (query.includes('gulshan') || query.includes('penthouse')) {
-        botResponse = 'Gulshan 2 holds the highest residential demand. A typical premium penthouse (3000+ sq ft) is valued between BDT 32M to BDT 45M. We recommend scheduling an inspection on our platform to verify Rajas and structural clearances.';
-      } else if (query.includes('booking') || query.includes('visit') || query.includes('inspect')) {
-        botResponse = 'You can schedule a visit by opening any property details page, choosing an available date/time slot, and submitting the request. Once approved by the owner, it will appear in your Buyer Dashboard.';
-      } else if (query.includes('kyc') || query.includes('verify')) {
-        botResponse = 'To verify your profile, go to your Buyer Dashboard -> KYC Verification, submit your National ID (NID) or Passport details. Admin reviews are processed in under 24 hours.';
-      } else if (query.includes('uttara') || query.includes('plot')) {
-        botResponse = 'Uttara residential sectors (Sector 11-14) are experiencing steady capital appreciation of 8.5% annually. Residential plots are priced around BDT 15M to BDT 30M depending on road width and lake facing views.';
+      let botResponse = "";
+
+      if (query.includes('who are you') || query.includes('what are you') || query.includes('about you') || query.includes('tumi k') || query.includes('apni k')) {
+        botResponse = "I am **Nestora AI**, your dedicated smart real estate assistant for Nestora platform! 🏢✨ I can help you search properties, check verified valuations in Bangladesh, guide you through visit scheduling & booking approvals, and answer questions about locations like Dhaka, Chittagong, Sylhet, and Cox's Bazar.";
+      } else if (query.includes('who made') || query.includes('who created') || query.includes('developer') || query.includes('admin') || query.includes('owner') || query.includes('banayese')) {
+        botResponse = "Nestora is an AI-powered Smart Real Estate & Transparent Property Management platform engineered for Bangladesh with microservices backend and modern React frontend.";
+      } else if (query.includes('hi') || query.includes('hello') || query.includes('hey') || query.includes('salam') || query.includes('kemon')) {
+        botResponse = "Hello! 👋 How can I assist you today with property search, price estimations, or scheduling visit inspections on Nestora?";
+      } else if (query.includes('how to book') || query.includes('booking') || query.includes('visit') || query.includes('inspect') || query.includes('schedule')) {
+        botResponse = "📅 **To book a property visit:**\n1. Go to any property details page.\n2. Pick your preferred date & time slot.\n3. Click **'Schedule Visit'**.\n4. Your booking stays '⏳ Admin Approval Pending' until the Admin/Owner reviews & confirms it!";
+      } else if (query.includes('price') || query.includes('cost') || query.includes('dam') || query.includes('valuation') || query.includes('rate')) {
+        botResponse = "📊 **Market Price Insights in BD:**\n• **Gulshan / Banani:** BDT 14,000 - 24,000 / sq ft\n• **Dhanmondi / Uttara:** BDT 9,000 - 15,000 / sq ft\n• **Bashundhara R/A:** BDT 7,500 - 12,000 / sq ft (Rent: 60k - 120k/mo)\n• **Sylhet & Chittagong:** BDT 6,000 - 11,000 / sq ft\n• **Gazipur Farmland:** BDT 3.5M - 6M / decimal.";
+      } else if (query.includes('gulshan') || query.includes('penthouse')) {
+        botResponse = "Gulshan 2 holds prime residential demand. A typical luxury penthouse (3,200+ sq ft) is valued at BDT 35M to 45M with Lake View and smart security systems.";
+      } else if (query.includes('kyc') || query.includes('verify') || query.includes('nid')) {
+        botResponse = "🔐 **KYC Verification:** Go to your Buyer Dashboard -> KYC Verification, submit your NID or Passport details. Admin reviews and approves it within 24 hours.";
       } else if (query.includes('bashundhara') || query.includes('rental') || query.includes('duplex')) {
-        botResponse = 'Bashundhara R/A offers premium family duplex rentals ranging from BDT 70,000 to BDT 120,000 per month. Perfect security with gate passes and security checkpoints.';
+        botResponse = "Bashundhara R/A offers premium family duplex rentals ranging from BDT 70,000 to BDT 140,000 per month with 24/7 security checkpoints and rooftop gardens.";
+      } else if (query.includes('sylhet') || query.includes('tea estate') || query.includes('vacation')) {
+        botResponse = "Sylhet & Sreemangal offer breathtaking vacation villas & tea garden bungalows ranging between BDT 18M to 25M with great passive holiday rental income potential!";
+      } else if (query.includes('cox') || query.includes('beach') || query.includes('sea')) {
+        botResponse = "Cox's Bazar beachfront apartments along Marine Drive provide high-yield vacation rental returns (approx. BDT 31M for sea-facing 3-bed suites).";
+      } else {
+        botResponse = "I can help you with property prices across Bangladesh, how to schedule visit inspections, KYC verification, or mortgage calculations. Feel free to ask about any specific location or feature!";
       }
 
       setMessages(prev => [...prev, { id: prev.length + 1, sender: 'bot', text: botResponse }]);
-    }, 800);
+    }, 600);
   };
 
   return (
