@@ -232,18 +232,15 @@ export default function PaymentModal({
   return (
     <div style={{
       position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
+      inset: 0,
       backgroundColor: 'rgba(5, 8, 16, 0.85)',
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 9999,
-      padding: '20px',
+      padding: '16px',
       overflowY: 'auto'
     }}>
       <div className="glass animate-fade-in" style={{
@@ -254,7 +251,8 @@ export default function PaymentModal({
         border: '1px solid rgba(255, 255, 255, 0.12)',
         boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8)',
         overflow: 'hidden',
-        position: 'relative'
+        position: 'relative',
+        margin: 'auto'
       }}>
         {/* Modal Header */}
         <div style={{
