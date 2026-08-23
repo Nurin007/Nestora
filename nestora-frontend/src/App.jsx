@@ -128,6 +128,117 @@ const INITIAL_PROPERTIES = [
     images: [
       'https://images.unsplash.com/photo-1524813686514-a57563d77d61?auto=format&fit=crop&w=800&q=80'
     ]
+  },
+  {
+    id: 6,
+    title: 'Green Valley Tea Estate Luxury Villa',
+    description: 'Breathtaking luxury vacation bungalow nestled amidst the rolling lush tea gardens of Sreemangal and Sylhet. Features wooden aesthetics, private panoramic veranda, solar & generator backup, and high-speed Wi-Fi.',
+    propertyType: 'RESIDENTIAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 24500000,
+    areaSize: 4200,
+    numberOfBedrooms: 5,
+    numberOfBathrooms: 5,
+    address: 'Radhanagar, Tea Estate Road',
+    city: 'Sylhet',
+    locationLat: 24.8949,
+    locationLong: 91.8687,
+    ownerId: 2,
+    amenities: ['Tea Garden View', 'Solar & Generator', 'Private Lawn', 'Barbeque Zone', 'Servant Quarters', 'Infinity Jacuzzi'],
+    images: [
+      'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'
+    ]
+  },
+  {
+    id: 7,
+    title: 'Surma Riverview Duplex Residence',
+    description: 'Ultra-modern 4-bedroom duplex apartment directly overlooking the scenic Surma River in Sylhet Zindabazar. Includes Italian fittings, central smart home automation, and 2 designated covered parking slots.',
+    propertyType: 'RESIDENTIAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 18500000,
+    areaSize: 3100,
+    numberOfBedrooms: 4,
+    numberOfBathrooms: 4,
+    address: 'VIP Road, Zindabazar',
+    city: 'Sylhet',
+    locationLat: 24.8978,
+    locationLong: 91.8714,
+    ownerId: 3,
+    amenities: ['Riverfront View', 'Smart Automation', 'Double-Height Ceiling', '24/7 Security', 'Rooftop Lounge'],
+    images: [
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80'
+    ]
+  },
+  {
+    id: 8,
+    title: 'Sylhet Shahjalal Commercial Plaza',
+    description: 'Prime commercial office space situated along Shahjalal Upashahar Main Avenue. Highly suitable for UK/USA consultancy firms, multinational IT centers, or foreign exchange banks.',
+    propertyType: 'COMMERCIAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 62000000,
+    areaSize: 6400,
+    numberOfBedrooms: 0,
+    numberOfBathrooms: 6,
+    address: 'Block D, Shahjalal Upashahar',
+    city: 'Sylhet',
+    locationLat: 24.8860,
+    locationLong: 91.8820,
+    ownerId: 2,
+    amenities: ['Dedicated High-Speed Lift', 'Central VRF AC', 'Underground 8-Car Parking', 'Fire Sprinklers'],
+    images: [
+      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80'
+    ]
+  },
+  {
+    id: 9,
+    title: 'Luxury Vacation Villa in Sreemangal',
+    description: 'Charming eco-resort style private villa surrounded by lemon orchards and pineapples. Perfect for weekend getaways and passive rental income in Greater Sylhet region.',
+    propertyType: 'RENTAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 120000,
+    areaSize: 2900,
+    numberOfBedrooms: 3,
+    numberOfBathrooms: 3,
+    address: 'Grand Sultan Bypass Road',
+    city: 'Sylhet',
+    locationLat: 24.3120,
+    locationLong: 91.7340,
+    ownerId: 3,
+    amenities: ['Eco-Friendly Design', 'Campfire Area', 'Infinity Lawn', 'Maid Service'],
+    images: [
+      'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80'
+    ]
+  },
+  {
+    id: 10,
+    title: 'Bayview Sea-Facing Penthouse Apartment',
+    description: 'Exclusive beachfront luxury residence overlooking the Marine Drive and Bay of Bengal in Cox\'s Bazar. Ideal for premium holiday home or high-yield vacation rental.',
+    propertyType: 'RESIDENTIAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 31000000,
+    areaSize: 2850,
+    numberOfBedrooms: 3,
+    numberOfBathrooms: 4,
+    address: 'Kolatoli Marine Drive',
+    city: "Cox's Bazar",
+    locationLat: 21.4272,
+    locationLong: 92.0058,
+    ownerId: 3,
+    amenities: ['Sea View Balcony', 'Infinity Pool', '24/7 Security', 'Beach Access', 'Underground Parking'],
+    images: [
+      'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'
+    ]
   }
 ];
 
@@ -579,6 +690,7 @@ export default function App() {
               properties={properties}
               setProperties={setProperties}
               bookings={bookings}
+              setBookings={setBookings}
               payments={payments}
               setPayments={setPayments}
               complaints={complaints}

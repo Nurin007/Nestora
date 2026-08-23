@@ -6,16 +6,30 @@ import {
   Sparkles, BarChart3, Info
 } from 'lucide-react';
 
+import { BD_DISTRICTS } from '../constants/districts';
+
 /* ─── Price model weights (calibrated to Bangladeshi market) ───────────
    Base price per sq ft by city (BDT)                                   */
-const CITY_BASE = {
-  Dhaka:      35000,
+const CITY_BASE = BD_DISTRICTS.reduce((acc, curr) => {
+  acc[curr.en] = curr.basePriceSqFt;
+  return acc;
+}, {
+  Dhaka: 35000,
   Chittagong: 18000,
-  Sylhet:     14000,
-  Gazipur:    10000,
-  Rajshahi:    8000,
-  Khulna:      8500,
-};
+  Sylhet: 14000,
+  "Cox's Bazar": 22000,
+  Narayanganj: 13000,
+  Gazipur: 10000,
+  Cumilla: 9500,
+  Khulna: 8500,
+  Rajshahi: 8000,
+  Mymensingh: 8000,
+  Bogura: 7800,
+  Barisal: 7500,
+  Jashore: 7200,
+  Rangpur: 7000,
+  "Sreemangal (Moulvibazar)": 12500
+});
 
 const TYPE_MULT = {
   RESIDENTIAL: 1.00,

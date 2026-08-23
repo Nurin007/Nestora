@@ -155,17 +155,36 @@ export default function PropertyDetails({ user, properties, bookings, setBooking
     }
 
     const newBooking = {
-      id: bookings.length + 1,
+      id: Date.now(),
       propertyId: property.id,
       buyerId: user.id,
+      buyerName: user.fullName,
+      buyerEmail: user.email,
       visitDate,
       visitTimeSlot,
       status: 'PENDING',
-      remarks: bookingRemarks
+      remarks: bookingRemarks,
+      createdAt: new Date().toISOString()
     };
 
-    setBookings([...bookings, newBooking]);
+    setBookings(prev => [...prev, newBooking]);
     setBookingSuccess(true);
+
+    // 🔔 Notify the property owner
+    if (property.ownerId) {
+      triggerNotification(
+        property.ownerId,
+        '🏠 New Visit Booking Request',
+        `${user.fullName} has requested a property visit for "${property.title}" on ${visitDate} at ${visitTimeSlot}. Go to your dashboard to Accept or Decline.`
+      );
+    }
+
+    // 🔔 Confirm to the buyer
+    triggerNotification(
+      user.id,
+      '✅ Booking Request Sent',
+      `Your visit request for "${property.title}" on ${visitDate} at ${visitTimeSlot} has been sent to the owner. You will be notified once they respond.`
+    );
   };
 
   // Compute EMI

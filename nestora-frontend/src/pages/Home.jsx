@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Heart, MapPin, Grid, DollarSign, Eye, GitCompare, ShieldCheck, Sparkles } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { BD_DISTRICTS } from '../constants/districts';
 
 export default function Home({ properties, wishlist, onToggleWishlist, compareList, onToggleCompare }) {
+  const { t, language } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const [cityFilter, setCityFilter] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
@@ -31,11 +34,10 @@ export default function Home({ properties, wishlist, onToggleWishlist, compareLi
     return matchesSearch && matchesCity && matchesType && matchesPrice;
   });
 
-  // Mock AI Recommendation System: Suggest top 3 properties based on mock user behavior/trend
+  // Mock AI Recommendation System: Highlight top curated flagship properties (Sylhet Villa, Gulshan Penthouse, Motijheel Commercial)
   const recommendedProperties = properties
     .filter(p => p.verificationStatus === 'APPROVED')
-    .sort((a, b) => b.pricing - a.pricing) // Simple mock: highest priced or some logic
-    .slice(0, 3);
+    .slice(0, 6);
 
   return (
     <div className="container animate-fade-in" style={{ paddingBottom: '80px' }}>
@@ -49,25 +51,25 @@ export default function Home({ properties, wishlist, onToggleWishlist, compareLi
         alignItems: 'center'
       }}>
         <h1 style={{
-          fontSize: 'clamp(2.1rem, 6vw, 3.5rem)',
+          fontSize: 'clamp(2.2rem, 5.5vw, 3.6rem)',
           lineHeight: '1.2',
           letterSpacing: '-1px',
           marginBottom: '16px',
-          maxWidth: '800px',
-          background: 'linear-gradient(to right, #ffffff, var(--primary), #ffffff)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
+          maxWidth: '850px',
+          color: '#0c2340',
+          fontWeight: 900
         }}>
-          Smart Real Estate. Transparent Inspections.
+          {t('heroTitlePrefix')} <span style={{ color: 'var(--primary)' }}>{t('heroTitleSuffix')}</span>
         </h1>
         <p style={{
-          color: 'var(--text-muted)',
-          fontSize: 'clamp(0.95rem, 2.5vw, 1.15rem)',
-          maxWidth: '600px',
+          color: '#475569',
+          fontSize: 'clamp(1rem, 2.5vw, 1.2rem)',
+          maxWidth: '620px',
           marginBottom: '36px',
-          lineHeight: '1.6'
+          lineHeight: '1.6',
+          fontWeight: 500
         }}>
-          Connect with verified property owners, view locations, inspect properties securely, and book slots in Bangladesh.
+          {t('heroSub')}
         </p>
 
         {/* Floating Glass Search Panel */}
@@ -76,60 +78,64 @@ export default function Home({ properties, wishlist, onToggleWishlist, compareLi
           maxWidth: '900px',
           padding: '20px',
           borderRadius: '20px',
-          boxShadow: 'var(--shadow-lg)'
+          background: '#ffffff',
+          border: '1.5px solid rgba(197, 155, 39, 0.3)',
+          boxShadow: '0 15px 35px rgba(12, 35, 64, 0.08)'
         }}>
           {/* Main search bar */}
           <div style={{ position: 'relative' }}>
-            <Search size={18} style={{ position: 'absolute', left: '16px', top: '15px', color: 'var(--text-dark)' }} />
+            <Search size={18} style={{ position: 'absolute', left: '16px', top: '15px', color: '#64748b' }} />
             <input
               type="text"
-              placeholder="Search Gulshan, Basundhara..."
+              placeholder={t('searchPlaceholder')}
               className="input-field"
-              style={{ paddingLeft: '48px', background: 'rgba(0,0,0,0.2)' }}
+              style={{ paddingLeft: '48px', background: '#f8fafc', color: '#0f172a', border: '1.5px solid #cbd5e1' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
-          {/* City selector */}
+          {/* City selector with all Bangladesh districts */}
           <select 
             className="input-field"
-            style={{ background: 'rgba(0,0,0,0.2)' }}
+            style={{ background: '#f8fafc', color: '#0f172a', border: '1.5px solid #cbd5e1' }}
             value={cityFilter}
             onChange={(e) => setCityFilter(e.target.value)}
           >
-            <option value="">All Cities</option>
-            <option value="Dhaka">Dhaka</option>
-            <option value="Gazipur">Gazipur</option>
-            <option value="Chittagong">Chittagong</option>
+            <option value="">{t('allCities')}</option>
+            {BD_DISTRICTS.map((d) => (
+              <option key={d.id} value={d.en}>
+                {language === 'bn' ? `${d.bn} (${d.en})` : `${d.en} (${d.bn})`}
+              </option>
+            ))}
           </select>
 
           {/* Type selector */}
           <select 
             className="input-field"
-            style={{ background: 'rgba(0,0,0,0.2)' }}
+            style={{ background: '#f8fafc', color: '#0f172a', border: '1.5px solid #cbd5e1' }}
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
           >
-            <option value="">All Types</option>
-            <option value="RESIDENTIAL">Residential</option>
-            <option value="COMMERCIAL">Commercial</option>
-            <option value="RENTAL">Rental</option>
-            <option value="LAND">Land</option>
+            <option value="">{t('allTypes')}</option>
+            <option value="RESIDENTIAL">{t('residential')}</option>
+            <option value="COMMERCIAL">{t('commercial')}</option>
+            <option value="RENTAL">{t('rental')}</option>
+            <option value="LAND">{t('land')}</option>
           </select>
 
           {/* Price selector */}
           <input
             type="number"
-            placeholder="Max Price (BDT)"
+            placeholder={t('maxPrice')}
             className="input-field"
-            style={{ background: 'rgba(0,0,0,0.2)' }}
+            style={{ background: '#f8fafc', color: '#0f172a', border: '1.5px solid #cbd5e1' }}
             value={priceMax}
             onChange={(e) => setPriceMax(e.target.value)}
           />
 
           <button className="btn btn-primary" style={{ padding: '12px 24px', height: '48px' }}>
-            Search
+            {t('searchBtn')}
           </button>
         </div>
       </section>

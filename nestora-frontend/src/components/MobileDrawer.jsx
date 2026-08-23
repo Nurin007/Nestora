@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import NestoraLogo from './NestoraLogo';
 
-export default function MobileDrawer({ open, onClose }) {
+export default function MobileDrawer({ open, onClose, user }) {
   return (
     <>
       {/* Backdrop overlay */}
@@ -70,66 +70,72 @@ export default function MobileDrawer({ open, onClose }) {
           </div>
 
           {/* Navigation Items */}
-          <nav>
-            <span style={{ fontSize: '0.72rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '10px' }}>
-              Explore Marketplace
-            </span>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <NavLink 
-                to="/" 
-                onClick={onClose} 
-                className="btn-secondary" 
-                style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
-              >
-                <Compass size={18} style={{ color: 'var(--primary)' }} /> Explore
-              </NavLink>
+          {user ? (
+            <nav>
+              <span style={{ fontSize: '0.72rem', color: 'var(--primary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: '10px' }}>
+                Explore Marketplace
+              </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <NavLink 
+                  to="/" 
+                  onClick={onClose} 
+                  className="btn-secondary" 
+                  style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
+                >
+                  <Compass size={18} style={{ color: 'var(--primary)' }} /> Explore
+                </NavLink>
 
-              <NavLink 
-                to="/listings" 
-                onClick={onClose} 
-                className="btn-secondary" 
-                style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
-              >
-                <LayoutGrid size={18} style={{ color: 'var(--primary)' }} /> All Listings
-              </NavLink>
+                <NavLink 
+                  to="/listings" 
+                  onClick={onClose} 
+                  className="btn-secondary" 
+                  style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
+                >
+                  <LayoutGrid size={18} style={{ color: 'var(--primary)' }} /> All Listings
+                </NavLink>
 
-              <NavLink 
-                to="/map" 
-                onClick={onClose} 
-                className="btn-secondary" 
-                style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
-              >
-                <Map size={18} style={{ color: 'var(--secondary)' }} /> Interactive Map
-              </NavLink>
+                <NavLink 
+                  to="/map" 
+                  onClick={onClose} 
+                  className="btn-secondary" 
+                  style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
+                >
+                  <Map size={18} style={{ color: 'var(--secondary)' }} /> Interactive Map
+                </NavLink>
 
-              <NavLink 
-                to="/compare" 
-                onClick={onClose} 
-                className="btn-secondary" 
-                style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
-              >
-                <GitCompare size={18} style={{ color: 'var(--accent)' }} /> Compare Flats
-              </NavLink>
+                <NavLink 
+                  to="/compare" 
+                  onClick={onClose} 
+                  className="btn-secondary" 
+                  style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
+                >
+                  <GitCompare size={18} style={{ color: 'var(--accent)' }} /> Compare Flats
+                </NavLink>
 
-              <NavLink 
-                to="/calculator" 
-                onClick={onClose} 
-                className="btn-secondary" 
-                style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
-              >
-                <Calculator size={18} style={{ color: '#f59e0b' }} /> EMI Calculator
-              </NavLink>
+                <NavLink 
+                  to="/calculator" 
+                  onClick={onClose} 
+                  className="btn-secondary" 
+                  style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
+                >
+                  <Calculator size={18} style={{ color: '#f59e0b' }} /> EMI Calculator
+                </NavLink>
 
-              <NavLink 
-                to="/predict" 
-                onClick={onClose} 
-                className="btn-secondary" 
-                style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
-              >
-                <BrainCircuit size={18} style={{ color: '#818cf8' }} /> AI Price Predict
-              </NavLink>
+                <NavLink 
+                  to="/predict" 
+                  onClick={onClose} 
+                  className="btn-secondary" 
+                  style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', justifyContent: 'flex-start' }}
+                >
+                  <BrainCircuit size={18} style={{ color: '#818cf8' }} /> AI Price Predict
+                </NavLink>
+              </div>
+            </nav>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '24px 0', color: 'var(--text-muted)' }}>
+              Please sign in to access details.
             </div>
-          </nav>
+          )}
         </div>
 
         {/* Footer Badge */}

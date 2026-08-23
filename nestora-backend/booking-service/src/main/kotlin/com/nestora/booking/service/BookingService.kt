@@ -140,4 +140,27 @@ class BookingService(
     fun getBuyerBookings(buyerId: Long): Flux<Booking> {
         return bookingRepository.findByBuyerId(buyerId)
     }
+
+    fun getAllBookings(): Flux<Booking> {
+        return bookingRepository.findAll()
+    }
+
+    @Transactional
+    fun adminUpdateStatus(bookingId: Long, status: String, reason: String?): Mono<Booking> {
+        return bookingRepository.findById(bookingId)
+            .switchIfEmpty(Mono.error(ResourceNotFoundException("Booking not found")))
+            .flatMap { booking ->
+                val updated = booking.copy(status = status, updatedAt = Instant.now())
+                bookingRepository.save(updated)
+                    .flatMap { saved ->
+                        val history = BookingHistory(
+                            bookingId = saved.id!!,
+                            status = status,
+                            updateReason = reason ?: "Status updated by Admin to $status",
+                            updatedBy = 1L
+                        )
+                        historyRepository.save(history).map { saved }
+                    }
+            }
+    }
 }

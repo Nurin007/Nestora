@@ -4,6 +4,7 @@ import com.nestora.booking.client.UserServiceClient
 import com.nestora.booking.entity.Booking
 import com.nestora.booking.entity.BookingHistory
 import com.nestora.booking.service.BookingService
+import com.nestora.common.exception.BadRequestException
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -73,5 +74,26 @@ class BookingController(
             .flatMapMany { user ->
                 bookingService.getBuyerBookings(user.id!!)
             }
+    }
+
+    @GetMapping("/admin/all")
+    fun getAllBookings(@RequestHeader("X-User-Role") role: String): Flux<Booking> {
+        if (role != "ADMIN") {
+            return Flux.error(BadRequestException("Unauthorized access: ADMIN role required"))
+        }
+        return bookingService.getAllBookings()
+    }
+
+    @PatchMapping("/admin/{id}/status")
+    fun adminUpdateStatus(
+        @RequestHeader("X-User-Role") role: String,
+        @PathVariable id: Long,
+        @RequestParam status: String,
+        @RequestParam(required = false) reason: String?
+    ): Mono<Booking> {
+        if (role != "ADMIN") {
+            return Mono.error(BadRequestException("Unauthorized access: ADMIN role required"))
+        }
+        return bookingService.adminUpdateStatus(id, status, reason)
     }
 }

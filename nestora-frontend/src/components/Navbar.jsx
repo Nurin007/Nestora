@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Compass, LayoutGrid, Map, BrainCircuit, User, LogOut, CheckCircle, 
-  BarChart3, GitCompare, Bell, Heart, Calculator, MessageSquare, Menu, X, ShieldCheck
+  BarChart3, GitCompare, Bell, Heart, Calculator, MessageSquare, Menu, X, ShieldCheck, Globe
 } from 'lucide-react';
 import MobileDrawer from './MobileDrawer';
 import NestoraLogo from './NestoraLogo';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar({ user, onLogout, notifications = [], setNotifications, wishlist = [] }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { language, toggleLanguage, t } = useLanguage();
   const [showNotifs, setShowNotifs] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -67,76 +69,110 @@ export default function Navbar({ user, onLogout, notifications = [], setNotifica
         </div>
 
         {/* 🖥️ DESKTOP MENU LINKS */}
-        <div className="desktop-only" style={{ alignItems: 'center', gap: '14px' }}>
-          <Link to="/" className={`btn-secondary ${isActive('/') ? 'active' : ''}`} style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.85rem',
-            padding: '7px 12px',
-            borderRadius: '10px',
-            background: isActive('/') ? 'rgba(204, 163, 83, 0.15)' : undefined,
-            borderColor: isActive('/') ? 'var(--primary)' : undefined,
-            color: isActive('/') ? 'var(--primary)' : undefined
-          }}>
-            <Compass size={15} /> Explore
-          </Link>
-          <Link to="/listings" className="btn-secondary" style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.85rem',
-            padding: '7px 12px',
-            borderRadius: '10px',
-            background: isActive('/listings') ? 'rgba(204, 163, 83, 0.15)' : undefined,
-            borderColor: isActive('/listings') ? 'var(--primary)' : undefined,
-            color: isActive('/listings') ? 'var(--primary)' : undefined
-          }}>
-            <LayoutGrid size={15} /> Listings
-          </Link>
-          <Link to="/map" className="btn-secondary" style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.85rem',
-            padding: '7px 12px',
-            borderRadius: '10px',
-            background: isActive('/map') ? 'rgba(204, 163, 83, 0.15)' : undefined,
-            borderColor: isActive('/map') ? 'var(--primary)' : undefined,
-            color: isActive('/map') ? 'var(--primary)' : undefined
-          }}>
-            <Map size={15} /> Map
-          </Link>
-          <Link to="/compare" className="btn-secondary" style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.85rem',
-            padding: '7px 12px',
-            borderRadius: '10px'
-          }}>
-            <GitCompare size={15} /> Compare
-          </Link>
-          <Link to="/calculator" className="btn-secondary" style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.85rem',
-            padding: '7px 12px',
-            borderRadius: '10px'
-          }}>
-            <Calculator size={15} /> EMI Calc
-          </Link>
-          <Link to="/predict" className="btn-secondary" style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '0.85rem',
-            padding: '7px 12px',
-            borderRadius: '10px'
-          }}>
-            <BrainCircuit size={15} /> Predict
-          </Link>
+        <div className="desktop-only" style={{ alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {/* 🌐 Language Switcher Toggle */}
+          <button 
+            type="button"
+            onClick={toggleLanguage}
+            className="btn-secondary"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '0.82rem',
+              padding: '6px 10px',
+              borderRadius: '8px',
+              background: language === 'bn' ? 'rgba(204, 163, 83, 0.15)' : '#ffffff',
+              borderColor: language === 'bn' ? 'var(--primary)' : '#cbd5e1',
+              color: '#0c2340',
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
+            title={language === 'en' ? 'Switch to Bangla' : 'Switch to English'}
+          >
+            <Globe size={14} style={{ color: 'var(--primary)' }} />
+            <span>{language === 'en' ? 'বাংলা' : 'EN'}</span>
+          </button>
+
+          {user && (
+            <>
+              <Link to="/" className={`btn-secondary ${isActive('/') ? 'active' : ''}`} style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '0.82rem',
+                padding: '6px 10px',
+                borderRadius: '8px',
+                background: isActive('/') ? 'rgba(197, 155, 39, 0.15)' : '#ffffff',
+                borderColor: isActive('/') ? 'var(--primary)' : '#cbd5e1',
+                color: isActive('/') ? '#0c2340' : '#475569',
+                fontWeight: isActive('/') ? 700 : 500
+              }}>
+                <Compass size={14} /> {t('explore')}
+              </Link>
+              <Link to="/listings" className="btn-secondary" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '0.82rem',
+                padding: '6px 10px',
+                borderRadius: '8px',
+                background: isActive('/listings') ? 'rgba(197, 155, 39, 0.15)' : '#ffffff',
+                borderColor: isActive('/listings') ? 'var(--primary)' : '#cbd5e1',
+                color: isActive('/listings') ? '#0c2340' : '#475569',
+                fontWeight: isActive('/listings') ? 700 : 500
+              }}>
+                <LayoutGrid size={14} /> {t('listings')}
+              </Link>
+              <Link to="/map" className="btn-secondary" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '0.82rem',
+                padding: '6px 10px',
+                borderRadius: '8px',
+                background: isActive('/map') ? 'rgba(197, 155, 39, 0.15)' : '#ffffff',
+                borderColor: isActive('/map') ? 'var(--primary)' : '#cbd5e1',
+                color: isActive('/map') ? '#0c2340' : '#475569',
+                fontWeight: isActive('/map') ? 700 : 500
+              }}>
+                <Map size={14} /> {t('mapView')}
+              </Link>
+              <Link to="/compare" className="btn-secondary" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '0.82rem',
+                padding: '6px 10px',
+                borderRadius: '8px',
+                color: '#475569'
+              }}>
+                <GitCompare size={14} /> {t('compare')}
+              </Link>
+              <Link to="/calculator" className="btn-secondary" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '0.82rem',
+                padding: '6px 10px',
+                borderRadius: '8px',
+                color: '#475569'
+              }}>
+                <Calculator size={14} /> {t('calculator')}
+              </Link>
+              <Link to="/predict" className="btn-secondary" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '0.82rem',
+                padding: '6px 10px',
+                borderRadius: '8px',
+                color: '#475569'
+              }}>
+                <BrainCircuit size={14} /> {t('valuation')}
+              </Link>
+            </>
+          )}
 
           {user && (
             <Link to="/chat" className="btn-secondary" style={{
@@ -262,51 +298,57 @@ export default function Navbar({ user, onLogout, notifications = [], setNotifica
                 </button>
 
                 {showNotifs && (
-                  <div className="glass animate-fade-in" style={{
+                  <div className="animate-fade-in" style={{
                     position: 'absolute',
-                    top: '44px',
-                    right: '0',
+                    top: 'calc(100% + 14px)',
+                    left: '0',
                     width: '320px',
-                    maxHeight: '360px',
+                    maxWidth: '85vw',
+                    maxHeight: '380px',
                     overflowY: 'auto',
                     borderRadius: '16px',
-                    zIndex: 2000,
+                    zIndex: 999999,
                     padding: '16px',
-                    boxShadow: 'var(--shadow-lg)',
+                    boxShadow: '0 20px 40px rgba(12, 35, 64, 0.25), 0 0 0 1.5px rgba(197, 155, 39, 0.4)',
                     background: '#ffffff',
-                    border: '1px solid #e2e8f0'
+                    border: '1.5px solid #cbd5e1'
                   }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', borderBottom: '1px solid var(--border-color)', paddingBottom: '8px' }}>
-                      <h4 style={{ margin: 0, fontSize: '0.85rem', color: '#0c2340' }}>Notifications</h4>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', borderBottom: '1px solid #e2e8f0', paddingBottom: '8px' }}>
+                      <h4 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 800, color: '#0c2340' }}>Notifications</h4>
                       {unreadCount > 0 && (
                         <button 
                           onClick={() => {
                             handleMarkAllRead();
                             setShowNotifs(false);
                           }}
-                          style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.72rem', cursor: 'pointer', fontWeight: 600 }}
+                          style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.75rem', cursor: 'pointer', fontWeight: 700 }}
                         >
                           Mark all read
                         </button>
                       )}
                     </div>
                     {myNotifications.length === 0 ? (
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textAlign: 'center', padding: '12px 0' }}>No notifications</p>
+                      <p style={{ color: '#64748b', fontSize: '0.82rem', textAlign: 'center', padding: '20px 0' }}>No notifications found</p>
                     ) : (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         {myNotifications.map(n => (
                           <div 
                             key={n.id} 
                             style={{
-                              padding: '10px',
-                              borderRadius: '8px',
-                              background: n.isRead ? '#f8fafc' : '#fef3c7',
-                              border: '1px solid #e2e8f0',
-                              textAlign: 'left'
+                              padding: '12px',
+                              borderRadius: '10px',
+                              background: n.isRead ? '#f8fafc' : '#fffbeb',
+                              border: n.isRead ? '1px solid #e2e8f0' : '1px solid #fde68a',
+                              textAlign: 'left',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
                             }}
                           >
-                            <h5 style={{ margin: '0 0 4px 0', fontSize: '0.8rem', fontWeight: 700, color: n.isRead ? 'var(--text-muted)' : '#0c2340' }}>{n.title}</h5>
-                            <p style={{ margin: 0, fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>{n.content}</p>
+                            <h5 style={{ margin: '0 0 4px 0', fontSize: '0.85rem', fontWeight: 700, color: n.isRead ? '#475569' : '#92400e' }}>
+                              {n.title}
+                            </h5>
+                            <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b', lineHeight: '1.45' }}>
+                              {n.content}
+                            </p>
                           </div>
                         ))}
                       </div>
@@ -354,7 +396,7 @@ export default function Navbar({ user, onLogout, notifications = [], setNotifica
       </nav>
 
       {/* Mobile Drawer */}
-      <MobileDrawer open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+      <MobileDrawer open={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} user={user} />
 
       {/* ========================================================
           📱 NATIVE MOBILE BOTTOM APP DOCK (Navigation Bar)

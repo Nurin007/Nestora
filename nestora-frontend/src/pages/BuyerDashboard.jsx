@@ -368,7 +368,10 @@ export default function BuyerDashboard({ user, setUser, properties, wishlist, on
                                       b.status === 'CONFIRMED' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                           color: b.status === 'PENDING' ? 'var(--warning)' : 
                                  b.status === 'CONFIRMED' ? 'var(--secondary)' : 'var(--danger)'
-                        }}>{b.status}</span>
+                        }}>
+                          {b.status === 'PENDING' ? '⏳ Admin Approval Pending' : 
+                           b.status === 'CONFIRMED' ? '✅ Visit Confirmed' : '❌ Cancelled'}
+                        </span>
                         
                         {(b.status === 'PENDING' || b.status === 'CONFIRMED') && (
                           <div style={{ display: 'flex', gap: '8px' }}>

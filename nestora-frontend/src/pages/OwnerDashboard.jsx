@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, PlusCircle, Check, X, ShieldAlert, FileText, Image, Lock, Eye, EyeOff, RefreshCw, CheckCircle, AlertCircle, User, CreditCard, DollarSign, Receipt } from 'lucide-react';
+import { BD_DISTRICTS } from '../constants/districts';
 
 export default function OwnerDashboard({ user, setUser, properties, setProperties, bookings, setBookings, payments = [], triggerNotification }) {
   // Tabs: 'listings', 'bookings', 'payments', 'create', 'settings'
@@ -163,10 +164,64 @@ export default function OwnerDashboard({ user, setUser, properties, setPropertie
   // Filter received payments for this owner's properties
   const myReceivedPayments = payments.filter(p => myPropertyIds.includes(p.propertyId) || p.ownerId === user.id);
 
+  // KYC Verification form state
+  const [ownerDocType, setOwnerDocType] = useState('TRADE_LICENSE');
+  const [ownerDocNumber, setOwnerDocNumber] = useState('');
+  const [ownerDocUrl, setOwnerDocUrl] = useState('');
+  const [ownerKycSubmitted, setOwnerKycSubmitted] = useState(false);
+
+  const handleOwnerKycSubmit = (e) => {
+    e.preventDefault();
+    if (!ownerDocNumber || !ownerDocUrl) {
+      alert('Please fill out all document verification fields.');
+      return;
+    }
+    setOwnerKycSubmitted(true);
+    
+    // Notify Admin (mock user ID 1)
+    triggerNotification(
+      1,
+      'Owner KYC Verification Requested',
+      `Property Owner/Agent ${user.fullName} submitted ${ownerDocType} (${ownerDocNumber}) for KYC verification.`
+    );
+
+    setUser({
+      ...user,
+      kycStatus: 'PENDING',
+      kycDocType: ownerDocType,
+      kycDocNum: ownerDocNumber
+    });
+
+    alert('Your KYC verification documents have been submitted to Nestora Admin for approval.');
+  };
+
   return (
     <div className="container animate-fade-in" style={{ paddingBottom: '80px', marginTop: '40px' }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '8px' }}>Owner & Agent Dashboard</h1>
-      <p style={{ color: 'var(--text-muted)', marginBottom: '32px' }}>Manage your property portfolio, received payments, and incoming inspection visits.</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '16px' }}>
+        <div>
+          <h1 style={{ fontSize: '2.5rem', margin: 0 }}>Owner & Agent Portal</h1>
+          <p style={{ color: 'var(--text-muted)', marginTop: '4px' }}>
+            Manage your real estate listings, inspect visit bookings, and verify your official credentials.
+          </p>
+        </div>
+
+        {/* KYC Badge indicator */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 16px',
+          borderRadius: '20px',
+          background: user.kycStatus === 'APPROVED' ? 'rgba(16,185,129,0.15)' :
+                      user.kycStatus === 'PENDING' ? 'rgba(245,158,11,0.15)' : 'rgba(239,68,68,0.12)',
+          border: `1px solid ${user.kycStatus === 'APPROVED' ? 'rgba(16,185,129,0.4)' : user.kycStatus === 'PENDING' ? 'rgba(245,158,11,0.4)' : 'rgba(239,68,68,0.3)'}`
+        }}>
+          <ShieldAlert size={18} style={{ color: user.kycStatus === 'APPROVED' ? '#10b981' : user.kycStatus === 'PENDING' ? '#f59e0b' : '#ef4444' }} />
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: user.kycStatus === 'APPROVED' ? '#10b981' : user.kycStatus === 'PENDING' ? '#f59e0b' : '#ef4444' }}>
+            {user.kycStatus === 'APPROVED' ? 'Verified Partner ✓' : user.kycStatus === 'PENDING' ? 'KYC Under Review ⏳' : 'Unverified Partner ⚠️'}
+          </span>
+        </div>
+      </div>
 
       {/* Tabs Menu */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '32px', flexWrap: 'wrap' }}>
@@ -190,6 +245,13 @@ export default function OwnerDashboard({ user, setUser, properties, setPropertie
           <CreditCard size={16} /> Received Payments ({myReceivedPayments.length})
         </button>
         <button 
+          onClick={() => setActiveTab('kyc')}
+          className={`btn ${activeTab === 'kyc' ? 'btn-primary' : 'btn-secondary'}`}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+        >
+          <ShieldAlert size={16} /> KYC Verification
+        </button>
+        <button 
           onClick={() => setActiveTab('create')}
           className={`btn ${activeTab === 'create' ? 'btn-primary' : 'btn-secondary'}`}
           style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
@@ -204,6 +266,100 @@ export default function OwnerDashboard({ user, setUser, properties, setPropertie
           <Lock size={16} /> Account Settings
         </button>
       </div>
+
+      {/* Tab: KYC Verification */}
+      {activeTab === 'kyc' && (
+        <div className="glass animate-fade-in" style={{ padding: '32px', maxWidth: '750px' }}>
+          <h2 style={{ fontSize: '1.5rem', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <ShieldAlert style={{ color: 'var(--primary)' }} /> Partner KYC & Trade License Verification
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '24px' }}>
+            Upload legal verification documents (National ID, Trade License, or REHAB Certification) to receive the Verified Partner badge.
+          </p>
+
+          {user.kycStatus === 'APPROVED' ? (
+            <div style={{
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              borderRadius: '12px',
+              padding: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px'
+            }}>
+              <CheckCircle size={36} style={{ color: '#10b981' }} />
+              <div>
+                <h4 style={{ fontSize: '1.1rem', color: '#10b981', margin: 0 }}>Your Account is Officially Verified</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
+                  Document: {user.kycDocType || 'Trade License'} ({user.kycDocNum || 'Approved'}). All your properties will display the Verified badge.
+                </p>
+              </div>
+            </div>
+          ) : user.kycStatus === 'PENDING' ? (
+            <div style={{
+              background: 'rgba(245, 158, 11, 0.1)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              borderRadius: '12px',
+              padding: '24px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px'
+            }}>
+              <AlertCircle size={36} style={{ color: '#f59e0b' }} />
+              <div>
+                <h4 style={{ fontSize: '1.1rem', color: '#f59e0b', margin: 0 }}>Verification Review Pending</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
+                  Your document ({user.kycDocType || ownerDocType}) has been submitted to the Admin team. You will receive an instant notification once approved.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleOwnerKycSubmit}>
+              <div className="input-group">
+                <label className="input-label">Document Type *</label>
+                <select 
+                  className="input-field"
+                  value={ownerDocType}
+                  onChange={(e) => setOwnerDocType(e.target.value)}
+                >
+                  <option value="TRADE_LICENSE">City Corporation Trade License</option>
+                  <option value="NID">National ID Card (NID)</option>
+                  <option value="REHAB_CERTIFICATE">REHAB / Real Estate Agent License</option>
+                  <option value="PASSPORT">Passport</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Document Registration Number *</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  placeholder="e.g. TL-DCC-2025-9382 or NID 1994857362"
+                  value={ownerDocNumber}
+                  onChange={(e) => setOwnerDocNumber(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="input-group" style={{ marginBottom: '24px' }}>
+                <label className="input-label">Document Scan URL / Photo Link *</label>
+                <input 
+                  type="url" 
+                  className="input-field" 
+                  placeholder="https://example.com/uploads/trade_license_scan.jpg"
+                  value={ownerDocUrl}
+                  onChange={(e) => setOwnerDocUrl(e.target.value)}
+                  required
+                />
+              </div>
+
+              <button type="submit" className="btn btn-primary" style={{ width: '100%', height: '46px' }}>
+                <ShieldAlert size={16} /> Submit Documents for KYC Approval
+              </button>
+            </form>
+          )}
+        </div>
+      )}
 
       {/* Tab: Received Payments */}
       {activeTab === 'payments' && (
@@ -337,57 +493,95 @@ export default function OwnerDashboard({ user, setUser, properties, setPropertie
       {/* Tab: Booking Requests */}
       {activeTab === 'bookings' && (
         <div className="glass animate-fade-in" style={{ padding: '32px' }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '24px' }}>Incoming Inspections</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <h2 style={{ fontSize: '1.5rem', margin: 0 }}>🏠 Incoming Booking Requests</h2>
+            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+              {myPropertyBookings.filter(b => b.status === 'PENDING').length} pending
+            </span>
+          </div>
           {myPropertyBookings.length === 0 ? (
-            <p style={{ color: 'var(--text-muted)' }}>No inspection bookings received yet.</p>
+            <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-muted)' }}>
+              <p style={{ fontSize: '1rem' }}>No booking requests received yet.</p>
+              <p style={{ fontSize: '0.85rem' }}>When a buyer requests a visit, it will appear here.</p>
+            </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {myPropertyBookings.map(b => {
+              {myPropertyBookings.slice().reverse().map(b => {
                 const prop = properties.find(p => p.id === b.propertyId);
+                const requestTime = b.createdAt ? new Date(b.createdAt).toLocaleString('en-BD', { dateStyle: 'medium', timeStyle: 'short' }) : 'Unknown';
                 return (
                   <div key={b.id} style={{
                     padding: '20px',
-                    borderRadius: '12px',
-                    background: 'rgba(255,255,255,0.01)',
-                    border: '1px solid var(--border-color)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
+                    borderRadius: '14px',
+                    background: b.status === 'PENDING' ? 'rgba(245, 158, 11, 0.06)' : b.status === 'CONFIRMED' ? 'rgba(16, 185, 129, 0.06)' : 'rgba(239,68,68,0.06)',
+                    border: `1.5px solid ${b.status === 'PENDING' ? 'rgba(245,158,11,0.35)' : b.status === 'CONFIRMED' ? 'rgba(16,185,129,0.35)' : 'rgba(239,68,68,0.35)'}`,
                   }}>
-                    <div>
-                      <h4 style={{ fontSize: '1.1rem', marginBottom: '4px' }}>{prop?.title}</h4>
-                      <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                        Visit requested on <strong>{b.visitDate}</strong> during <strong>{b.visitTimeSlot}</strong>
-                      </p>
-                      {b.remarks && <p style={{ fontSize: '0.8rem', color: 'var(--text-dark)' }}>Client note: "{b.remarks}"</p>}
+                    {/* Top row: property name + status badge */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                      <div>
+                        <h4 style={{ fontSize: '1rem', marginBottom: '2px', color: 'var(--text-main)' }}>{prop?.title || 'Unknown Property'}</h4>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{prop?.address}, {prop?.city}</span>
+                      </div>
+                      <span style={{
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        fontSize: '0.72rem',
+                        fontWeight: 800,
+                        background: b.status === 'PENDING' ? 'rgba(245,158,11,0.18)' : b.status === 'CONFIRMED' ? 'rgba(16,185,129,0.18)' : 'rgba(239,68,68,0.18)',
+                        color: b.status === 'PENDING' ? '#b45309' : b.status === 'CONFIRMED' ? '#065f46' : '#991b1b'
+                      }}>{b.status}</span>
                     </div>
-                    <div style={{ display: 'flex', gap: '10px' }}>
+
+                    {/* Buyer info */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '12px', padding: '12px', background: 'rgba(255,255,255,0.5)', borderRadius: '10px', border: '1px solid rgba(0,0,0,0.06)' }}>
+                      <div>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Buyer Name</span>
+                        <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0c2340', margin: '2px 0 0 0' }}>{b.buyerName || `Buyer #${b.buyerId}`}</p>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Contact</span>
+                        <p style={{ fontSize: '0.82rem', color: '#334155', margin: '2px 0 0 0' }}>{b.buyerEmail || '—'}</p>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Visit Date</span>
+                        <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0c2340', margin: '2px 0 0 0' }}>{b.visitDate}</p>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Time Slot</span>
+                        <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0c2340', margin: '2px 0 0 0' }}>{b.visitTimeSlot}</p>
+                      </div>
+                    </div>
+
+                    {b.remarks && (
+                      <div style={{ marginBottom: '12px', padding: '10px 14px', background: 'rgba(100,116,139,0.08)', borderRadius: '8px', borderLeft: '3px solid var(--primary)' }}>
+                        <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Buyer Note</span>
+                        <p style={{ margin: '4px 0 0 0', fontSize: '0.83rem', color: '#334155', fontStyle: 'italic' }}>"{ b.remarks}"</p>
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Requested: {requestTime}</span>
                       {b.status === 'PENDING' ? (
-                        <>
-                          <button 
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                          <button
                             onClick={() => handleUpdateBookingStatus(b.id, 'CONFIRMED')}
-                            className="btn" 
-                            style={{ background: 'var(--secondary)', color: '#ffffff', padding: '6px 12px', fontSize: '0.8rem' }}
+                            className="btn"
+                            style={{ background: '#10b981', color: '#ffffff', padding: '7px 16px', fontSize: '0.82rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}
                           >
-                            <Check size={14} /> Confirm
+                            <Check size={14} /> Accept
                           </button>
-                          <button 
+                          <button
                             onClick={() => handleUpdateBookingStatus(b.id, 'CANCELLED')}
-                            className="btn-danger" 
-                            style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                            className="btn-danger"
+                            style={{ padding: '7px 16px', fontSize: '0.82rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}
                           >
                             <X size={14} /> Decline
                           </button>
-                        </>
+                        </div>
                       ) : (
-                        <span style={{
-                          padding: '4px 10px',
-                          borderRadius: '6px',
-                          fontSize: '0.75rem',
-                          fontWeight: 700,
-                          background: b.status === 'CONFIRMED' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                          color: b.status === 'CONFIRMED' ? 'var(--secondary)' : 'var(--danger)'
-                        }}>{b.status}</span>
+                        <span style={{ fontSize: '0.8rem', fontWeight: 700, color: b.status === 'CONFIRMED' ? '#10b981' : '#ef4444' }}>
+                          {b.status === 'CONFIRMED' ? '✅ Accepted' : '❌ Declined'}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -497,9 +691,11 @@ export default function OwnerDashboard({ user, setUser, properties, setPropertie
               <div className="input-group">
                 <label className="input-label">City *</label>
                 <select className="input-field" value={city} onChange={(e) => setCity(e.target.value)}>
-                  <option value="Dhaka">Dhaka</option>
-                  <option value="Gazipur">Gazipur</option>
-                  <option value="Chittagong">Chittagong</option>
+                  {BD_DISTRICTS.map(d => (
+                    <option key={d.id} value={d.en}>
+                      {d.en} ({d.bn})
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

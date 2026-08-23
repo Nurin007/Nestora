@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Home, AlertCircle, FileText, BarChart3, Database, CheckCircle, XCircle, Clock, Filter, CreditCard, DollarSign, Search, Check, Printer, Smartphone, Building } from 'lucide-react';
 
-export default function AdminDashboard({ properties, setProperties, bookings, payments = [], setPayments, complaints, setComplaints, auditLogs, setAuditLogs, reviews = [], setReviews, triggerNotification }) {
-  // Tabs: 'kyc', 'properties', 'payments', 'reviews', 'broadcast', 'complaints', 'logs', 'analytics'
+export default function AdminDashboard({ properties, setProperties, bookings, setBookings, payments = [], setPayments, complaints, setComplaints, auditLogs, setAuditLogs, reviews = [], setReviews, triggerNotification }) {
+  // Tabs: 'kyc', 'properties', 'payments', 'reviews', 'broadcast', 'complaints', 'logs', 'analytics', 'bookings'
   const [activeTab, setActiveTab] = useState('payments');
   const [complaintFilter, setComplaintFilter] = useState('ALL');
   
@@ -11,6 +11,10 @@ export default function AdminDashboard({ properties, setProperties, bookings, pa
   const [paymentMethodFilter, setPaymentMethodFilter] = useState('ALL');
   const [paymentSearchQuery, setPaymentSearchQuery] = useState('');
   const [selectedReceipt, setSelectedReceipt] = useState(null);
+
+  // Bookings tab state
+  const [bookingStatusFilter, setBookingStatusFilter] = useState('ALL');
+  const [bookingSearchQuery, setBookingSearchQuery] = useState('');
 
   // We mock a list of users pending KYC reviews for testing
   const [pendingKycUsers, setPendingKycUsers] = useState([
@@ -128,6 +132,88 @@ export default function AdminDashboard({ properties, setProperties, bookings, pa
     alert(`KYC for ${userToApprove?.fullName} has been approved.`);
   };
 
+  const handleRejectKyc = (userId) => {
+    const userToReject = pendingKycUsers.find(u => u.id === userId);
+    setPendingKycUsers(pendingKycUsers.filter(u => u.id !== userId));
+    
+    // Add audit log
+    const log = {
+      id: auditLogs.length + 1,
+      adminId: 1,
+      action: 'REJECT_KYC',
+      targetType: 'USER',
+      targetId: userId,
+      remarks: `Rejected KYC for ${userToReject?.fullName} (${userToReject?.docType})`,
+      createdAt: new Date().toISOString()
+    };
+    setAuditLogs([log, ...auditLogs]);
+    
+    // Notify User
+    triggerNotification(userId, 'KYC Verification Declined', 'Your KYC submission was rejected. Please re-upload clear photos of your National ID or Trade License.');
+    alert(`KYC for ${userToReject?.fullName} has been rejected.`);
+  };
+
+  const handleApproveBooking = (bookingId) => {
+    const targetBooking = bookings.find(b => b.id === bookingId);
+    if (!targetBooking) return;
+
+    setBookings(bookings.map(b => b.id === bookingId ? { ...b, status: 'CONFIRMED' } : b));
+
+    // Add audit log
+    const log = {
+      id: auditLogs.length + 1,
+      adminId: 1,
+      action: 'APPROVE_BOOKING',
+      targetType: 'BOOKING',
+      targetId: bookingId,
+      remarks: `Approved visit booking ID: ${bookingId} for property "${properties.find(p => p.id === targetBooking.propertyId)?.title || targetBooking.propertyId}" by ${targetBooking.buyerName}`,
+      createdAt: new Date().toISOString()
+    };
+    setAuditLogs([log, ...auditLogs]);
+
+    // Notify Buyer
+    if (targetBooking.buyerId) {
+      triggerNotification(
+        targetBooking.buyerId,
+        '✅ Property Visit Confirmed',
+        `Your visit request for "${properties.find(p => p.id === targetBooking.propertyId)?.title || 'Property'}" on ${targetBooking.visitDate} has been confirmed by Admin.`
+      );
+    }
+    alert(`Booking confirmed successfully.`);
+  };
+
+  const handleRejectBooking = (bookingId) => {
+    const targetBooking = bookings.find(b => b.id === bookingId);
+    if (!targetBooking) return;
+
+    const reason = window.prompt("Enter reason for cancellation:", "Schedule conflict / Unavailable slot");
+    if (reason === null) return; // User cancelled prompt
+
+    setBookings(bookings.map(b => b.id === bookingId ? { ...b, status: 'CANCELLED', remarks: reason ? `${b.remarks || ''} (Cancelled: ${reason})` : b.remarks } : b));
+
+    // Add audit log
+    const log = {
+      id: auditLogs.length + 1,
+      adminId: 1,
+      action: 'REJECT_BOOKING',
+      targetType: 'BOOKING',
+      targetId: bookingId,
+      remarks: `Cancelled visit booking ID: ${bookingId}. Reason: ${reason}`,
+      createdAt: new Date().toISOString()
+    };
+    setAuditLogs([log, ...auditLogs]);
+
+    // Notify Buyer
+    if (targetBooking.buyerId) {
+      triggerNotification(
+        targetBooking.buyerId,
+        '❌ Property Visit Cancelled',
+        `Your visit request for "${properties.find(p => p.id === targetBooking.propertyId)?.title || 'Property'}" on ${targetBooking.visitDate} has been cancelled by Admin. Reason: ${reason}`
+      );
+    }
+    alert(`Booking rejected.`);
+  };
+
   const handleApproveProperty = (propertyId) => {
     setProperties(properties.map(p => p.id === propertyId ? { ...p, verificationStatus: 'APPROVED' } : p));
     const targetProp = properties.find(p => p.id === propertyId);
@@ -222,6 +308,9 @@ export default function AdminDashboard({ properties, setProperties, bookings, pa
         <button onClick={() => setActiveTab('payments')} className={`btn ${activeTab === 'payments' ? 'btn-primary' : 'btn-secondary'}`}>
           <CreditCard size={16} /> Payments & Revenue ({payments.length})
         </button>
+        <button onClick={() => setActiveTab('bookings')} className={`btn ${activeTab === 'bookings' ? 'btn-primary' : 'btn-secondary'}`}>
+          <Clock size={16} /> Property Bookings ({bookings.length})
+        </button>
         <button onClick={() => setActiveTab('kyc')} className={`btn ${activeTab === 'kyc' ? 'btn-primary' : 'btn-secondary'}`}>
           KYC Verifications ({pendingKycUsers.length})
         </button>
@@ -244,6 +333,214 @@ export default function AdminDashboard({ properties, setProperties, bookings, pa
           System Reports
         </button>
       </div>
+
+      {/* Tab: Bookings */}
+      {activeTab === 'bookings' && (
+        <div className="glass animate-fade-in" style={{ padding: '32px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
+            <div>
+              <h2 style={{ fontSize: '1.6rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Clock style={{ color: 'var(--primary)' }} /> User Bookings & Visit Schedules
+              </h2>
+              <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '4px' }}>
+                Review, accept, or decline visit requests from potential buyers.
+              </p>
+            </div>
+          </div>
+
+          {/* Metric Cards */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '16px',
+            marginBottom: '32px'
+          }}>
+            <div style={{ padding: '20px', background: 'rgba(204, 163, 83, 0.08)', border: '1px solid rgba(204, 163, 83, 0.25)', borderRadius: '16px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Total Bookings</span>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--primary)', marginTop: '6px' }}>
+                {bookings.length}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>All requested visits</span>
+            </div>
+
+            <div style={{ padding: '20px', background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.25)', borderRadius: '16px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Pending Action</span>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#f59e0b', marginTop: '6px' }}>
+                {bookings.filter(b => b.status === 'PENDING').length}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: 600 }}>
+                ● Awaiting confirmation
+              </span>
+            </div>
+
+            <div style={{ padding: '20px', background: 'rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.25)', borderRadius: '16px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Confirmed Visits</span>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#10b981', marginTop: '6px' }}>
+                {bookings.filter(b => b.status === 'CONFIRMED').length}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 600 }}>
+                ● Scheduled and approved
+              </span>
+            </div>
+
+            <div style={{ padding: '20px', background: 'rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.25)', borderRadius: '16px' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Cancelled / Rejected</span>
+              <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#ef4444', marginTop: '6px' }}>
+                {bookings.filter(b => b.status === 'CANCELLED').length}
+              </h3>
+              <span style={{ fontSize: '0.75rem', color: '#ef4444', fontWeight: 600 }}>
+                ● Discarded requests
+              </span>
+            </div>
+          </div>
+
+          {/* Search & Filters */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '2fr 1fr',
+            gap: '12px',
+            marginBottom: '20px'
+          }}>
+            <div style={{ position: 'relative' }}>
+              <Search size={16} style={{ position: 'absolute', left: '14px', top: '14px', color: 'var(--text-dark)' }} />
+              <input
+                type="text"
+                placeholder="Search by Buyer Name or Property Title..."
+                className="input-field"
+                style={{ paddingLeft: '40px' }}
+                value={bookingSearchQuery}
+                onChange={(e) => setBookingSearchQuery(e.target.value)}
+              />
+            </div>
+
+            <select
+              className="input-field"
+              value={bookingStatusFilter}
+              onChange={(e) => setBookingStatusFilter(e.target.value)}
+            >
+              <option value="ALL">All Statuses</option>
+              <option value="PENDING">Pending Approval</option>
+              <option value="CONFIRMED">Confirmed</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
+          </div>
+
+          {/* Bookings Table */}
+          {bookings.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
+              No visit bookings logged yet.
+            </div>
+          ) : (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.85rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
+                    <th style={{ padding: '12px 14px' }}>Property Details</th>
+                    <th style={{ padding: '12px 14px' }}>Buyer Information</th>
+                    <th style={{ padding: '12px 14px' }}>Scheduled Date & Time</th>
+                    <th style={{ padding: '12px 14px' }}>Remarks</th>
+                    <th style={{ padding: '12px 14px' }}>Status</th>
+                    <th style={{ padding: '12px 14px', textAlign: 'right' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bookings
+                    .filter((b) => {
+                      const prop = properties.find(p => p.id === b.propertyId);
+                      const matchesSearch = 
+                        (b.buyerName?.toLowerCase() || '').includes(bookingSearchQuery.toLowerCase()) ||
+                        (prop?.title?.toLowerCase() || '').includes(bookingSearchQuery.toLowerCase());
+                      const matchesStatus = bookingStatusFilter === 'ALL' ? true : b.status === bookingStatusFilter;
+                      return matchesSearch && matchesStatus;
+                    })
+                    .map((b) => {
+                      const prop = properties.find(p => p.id === b.propertyId);
+                      return (
+                        <tr key={b.id} style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', transition: 'background 0.2s' }}>
+                          <td style={{ padding: '14px' }}>
+                            <strong style={{ color: '#ffffff', display: 'block' }}>{prop?.title || 'Unknown Property'}</strong>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                              {prop?.address}, {prop?.city} ({prop?.propertyType})
+                            </span>
+                          </td>
+                          <td style={{ padding: '14px' }}>
+                            <strong style={{ color: '#ffffff', display: 'block' }}>{b.buyerName}</strong>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                              {b.buyerEmail || `ID: ${b.buyerId}`}
+                            </span>
+                          </td>
+                          <td style={{ padding: '14px' }}>
+                            <span style={{ fontWeight: 600, color: 'var(--primary)', display: 'block' }}>
+                              {b.visitDate}
+                            </span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                              {b.visitTimeSlot}
+                            </span>
+                          </td>
+                          <td style={{ padding: '14px', maxWidth: '200px', wordBreak: 'break-word' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>
+                              {b.remarks || 'No remarks'}
+                            </span>
+                          </td>
+                          <td style={{ padding: '14px' }}>
+                            <span style={{
+                              padding: '4px 10px',
+                              borderRadius: '8px',
+                              fontSize: '0.75rem',
+                              fontWeight: 700,
+                              background: b.status === 'CONFIRMED' ? 'rgba(16, 185, 129, 0.15)' :
+                                          b.status === 'PENDING' ? 'rgba(245, 158, 11, 0.15)' :
+                                          'rgba(239, 68, 68, 0.15)',
+                              color: b.status === 'CONFIRMED' ? '#10b981' :
+                                     b.status === 'PENDING' ? '#f59e0b' :
+                                     '#ef4444'
+                            }}>
+                              {b.status}
+                            </span>
+                          </td>
+                          <td style={{ padding: '14px', textAlign: 'right' }}>
+                            <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                              {b.status === 'PENDING' && (
+                                <>
+                                  <button
+                                    onClick={() => handleApproveBooking(b.id)}
+                                    className="btn"
+                                    style={{ background: 'var(--secondary)', color: '#ffffff', padding: '6px 12px', fontSize: '0.75rem' }}
+                                    title="Accept visit request"
+                                  >
+                                    <Check size={14} /> Accept
+                                  </button>
+                                  <button
+                                    onClick={() => handleRejectBooking(b.id)}
+                                    className="btn-danger"
+                                    style={{ padding: '6px 12px', fontSize: '0.75rem' }}
+                                    title="Decline visit request"
+                                  >
+                                    Reject
+                                  </button>
+                                </>
+                              )}
+                              {b.status === 'CONFIRMED' && (
+                                <button
+                                  onClick={() => handleRejectBooking(b.id)}
+                                  className="btn-danger"
+                                  style={{ padding: '6px 12px', fontSize: '0.75rem' }}
+                                  title="Cancel visit schedule"
+                                >
+                                  Cancel Visit
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Tab: Payments & Escrow */}
       {activeTab === 'payments' && (
@@ -585,7 +882,11 @@ export default function AdminDashboard({ properties, setProperties, bookings, pa
                     >
                       Approve
                     </button>
-                    <button className="btn-danger" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
+                    <button 
+                      onClick={() => handleRejectKyc(u.id)}
+                      className="btn-danger" 
+                      style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                    >
                       Decline
                     </button>
                   </div>

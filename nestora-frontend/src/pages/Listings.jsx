@@ -6,7 +6,9 @@ import {
   ChevronDown, ChevronUp, X, SortAsc
 } from 'lucide-react';
 
-const CITIES = ['Dhaka', 'Gazipur', 'Chittagong', 'Sylhet', 'Rajshahi', 'Khulna'];
+import { BD_DISTRICTS } from '../constants/districts';
+
+const CITIES = BD_DISTRICTS.map(d => d.en);
 const TYPES = ['RESIDENTIAL', 'COMMERCIAL', 'RENTAL', 'LAND'];
 const SORT_OPTIONS = [
   { value: 'newest',    label: 'Newest First' },
