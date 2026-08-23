@@ -27,28 +27,32 @@ export default function AIChatbot() {
     setTimeout(() => {
       let botResponse = "";
 
-      if (query.includes('who are you') || query.includes('what are you') || query.includes('about you') || query.includes('tumi k') || query.includes('apni k')) {
+      if (query.includes('who are you') || query.includes('what are you') || query.includes('about you') || query.includes('tumi k') || query.includes('apni k') || query.includes('information about you') || query.includes('info')) {
         botResponse = "I am **Nestora AI**, your dedicated smart real estate assistant for Nestora platform! 🏢✨ I can help you search properties, check verified valuations in Bangladesh, guide you through visit scheduling & booking approvals, and answer questions about locations like Dhaka, Chittagong, Sylhet, and Cox's Bazar.";
+      } else if (query.includes('book') || query.includes('booked') || query.includes('booking') || query.includes('visit') || query.includes('inspect') || query.includes('schedule') || query.includes('dekhte')) {
+        botResponse = "📅 **To book a property inspection/visit:**\n1. Open any property details page.\n2. Pick your preferred date & time slot.\n3. Click **'Schedule Visit'**.\n4. Your booking stays '⏳ Admin Approval Pending' until the Admin/Owner reviews & confirms it!";
+      } else if (query.includes('buy') || query.includes('kinbo') || query.includes('purchase')) {
+        botResponse = "🏡 **How to Buy Properties on Nestora:**\n1. Browse verified listings on **Listings** or **Explore**.\n2. Schedule a physical visit inspection.\n3. Complete KYC verification on your Dashboard.\n4. Submit token booking payment securely!";
+      } else if (query.includes('rent') || query.includes('bhara') || query.includes('vara')) {
+        botResponse = "🏢 **Rental Properties on Nestora:**\nWe have verified duplexes, luxury family flats, and corporate offices available for rent in Bashundhara, Banani, Gulshan, and Sylhet. Check the 'Rental' filter on the Home or Listings page!";
       } else if (query.includes('who made') || query.includes('who created') || query.includes('developer') || query.includes('admin') || query.includes('owner') || query.includes('banayese')) {
         botResponse = "Nestora is an AI-powered Smart Real Estate & Transparent Property Management platform engineered for Bangladesh with microservices backend and modern React frontend.";
       } else if (query.includes('hi') || query.includes('hello') || query.includes('hey') || query.includes('salam') || query.includes('kemon')) {
         botResponse = "Hello! 👋 How can I assist you today with property search, price estimations, or scheduling visit inspections on Nestora?";
-      } else if (query.includes('how to book') || query.includes('booking') || query.includes('visit') || query.includes('inspect') || query.includes('schedule')) {
-        botResponse = "📅 **To book a property visit:**\n1. Go to any property details page.\n2. Pick your preferred date & time slot.\n3. Click **'Schedule Visit'**.\n4. Your booking stays '⏳ Admin Approval Pending' until the Admin/Owner reviews & confirms it!";
-      } else if (query.includes('price') || query.includes('cost') || query.includes('dam') || query.includes('valuation') || query.includes('rate')) {
+      } else if (query.includes('price') || query.includes('cost') || query.includes('dam') || query.includes('valuation') || query.includes('rate') || query.includes('koto')) {
         botResponse = "📊 **Market Price Insights in BD:**\n• **Gulshan / Banani:** BDT 14,000 - 24,000 / sq ft\n• **Dhanmondi / Uttara:** BDT 9,000 - 15,000 / sq ft\n• **Bashundhara R/A:** BDT 7,500 - 12,000 / sq ft (Rent: 60k - 120k/mo)\n• **Sylhet & Chittagong:** BDT 6,000 - 11,000 / sq ft\n• **Gazipur Farmland:** BDT 3.5M - 6M / decimal.";
       } else if (query.includes('gulshan') || query.includes('penthouse')) {
         botResponse = "Gulshan 2 holds prime residential demand. A typical luxury penthouse (3,200+ sq ft) is valued at BDT 35M to 45M with Lake View and smart security systems.";
       } else if (query.includes('kyc') || query.includes('verify') || query.includes('nid')) {
         botResponse = "🔐 **KYC Verification:** Go to your Buyer Dashboard -> KYC Verification, submit your NID or Passport details. Admin reviews and approves it within 24 hours.";
-      } else if (query.includes('bashundhara') || query.includes('rental') || query.includes('duplex')) {
+      } else if (query.includes('bashundhara') || query.includes('duplex')) {
         botResponse = "Bashundhara R/A offers premium family duplex rentals ranging from BDT 70,000 to BDT 140,000 per month with 24/7 security checkpoints and rooftop gardens.";
       } else if (query.includes('sylhet') || query.includes('tea estate') || query.includes('vacation')) {
         botResponse = "Sylhet & Sreemangal offer breathtaking vacation villas & tea garden bungalows ranging between BDT 18M to 25M with great passive holiday rental income potential!";
       } else if (query.includes('cox') || query.includes('beach') || query.includes('sea')) {
         botResponse = "Cox's Bazar beachfront apartments along Marine Drive provide high-yield vacation rental returns (approx. BDT 31M for sea-facing 3-bed suites).";
       } else {
-        botResponse = "I can help you with property prices across Bangladesh, how to schedule visit inspections, KYC verification, or mortgage calculations. Feel free to ask about any specific location or feature!";
+        botResponse = "I can assist you with property valuations, scheduling inspection visits, verified KYC requirements, or comparing properties across Dhaka, Chittagong, Sylhet, and Cox's Bazar!";
       }
 
       setMessages(prev => [...prev, { id: prev.length + 1, sender: 'bot', text: botResponse }]);
@@ -153,13 +157,14 @@ export default function AIChatbot() {
                 )}
                 
                 <div style={{
-                  maxWidth: '75%',
+                  maxWidth: '78%',
                   background: msg.sender === 'user' ? 'var(--primary)' : 'rgba(255,255,255,0.03)',
                   color: msg.sender === 'user' ? '#0b0f19' : 'var(--text-main)',
                   padding: '10px 14px',
                   borderRadius: msg.sender === 'user' ? '16px 16px 2px 16px' : '16px 16px 16px 2px',
                   fontSize: '0.85rem',
-                  lineHeight: '1.4',
+                  lineHeight: '1.5',
+                  whiteSpace: 'pre-line',
                   border: msg.sender === 'user' ? 'none' : '1px solid var(--border-color)'
                 }}>
                   {msg.text}
