@@ -239,6 +239,97 @@ const INITIAL_PROPERTIES = [
       'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'
     ]
+  },
+  {
+    id: 11,
+    title: 'Modern Minimalist Villa in Dhanmondi',
+    description: 'Architect-designed private 3-story luxury residence located on serene Dhanmondi Road 8/A. Features indoor landscaped atrium, heated plunge pool, dedicated library, solar power system, and 3-car garage.',
+    propertyType: 'RESIDENTIAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 42000000,
+    areaSize: 4500,
+    numberOfBedrooms: 5,
+    numberOfBathrooms: 6,
+    address: 'Road 8/A, Dhanmondi',
+    city: 'Dhaka',
+    locationLat: 23.7465,
+    locationLong: 90.3760,
+    ownerId: 2,
+    amenities: ['Private Plunge Pool', 'Solar System', 'Indoor Atrium', '3-Car Garage', 'Smart Access Control', 'Servant Quarters'],
+    images: [
+      'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80'
+    ]
+  },
+  {
+    id: 12,
+    title: 'Chittagong Bay-View Corporate Tower Suite',
+    description: 'Grade-A premium commercial office floor in Agrabad Commercial Area. High-speed panoramic elevators, sea view meeting rooms, 100% full power backup, and centralized VRF HVAC system.',
+    propertyType: 'COMMERCIAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 78000000,
+    areaSize: 7200,
+    numberOfBedrooms: 0,
+    numberOfBathrooms: 6,
+    address: 'Agrabad Commercial Area',
+    city: 'Chittagong',
+    locationLat: 22.3242,
+    locationLong: 91.8143,
+    ownerId: 3,
+    amenities: ['Port & Bay View', 'Central VRF AC', 'High-Speed Elevators', '24/7 Security & CCTV', 'Covered Parking 12 Cars'],
+    images: [
+      'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80'
+    ]
+  },
+  {
+    id: 13,
+    title: 'Khulshi Hills Elite Panoramic Duplex',
+    description: 'Exclusive hillside duplex situated in elite South Khulshi Residential Area, Chittagong. Features lush green natural surroundings, expansive glass curtain walls, private rooftop garden, and Italian marble interior.',
+    propertyType: 'RESIDENTIAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 29500000,
+    areaSize: 3600,
+    numberOfBedrooms: 4,
+    numberOfBathrooms: 5,
+    address: 'South Khulshi R/A',
+    city: 'Chittagong',
+    locationLat: 22.3619,
+    locationLong: 91.8021,
+    ownerId: 2,
+    amenities: ['Hill View', 'Rooftop Lawn Garden', 'Italian Marble Flooring', 'Double Height Living Room', 'Smart Security System'],
+    images: [
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=800&q=80'
+    ]
+  },
+  {
+    id: 14,
+    title: 'Banani Lakefront Executive Furnished Rental',
+    description: 'Fully furnished, turnkey luxury 3-bedroom apartment with direct Banani-Gulshan lake views. Tastefully curated with Scandinavian furniture, smart appliances, weekly housekeeping, and 24/7 dedicated reception desk.',
+    propertyType: 'RENTAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 140000,
+    areaSize: 2400,
+    numberOfBedrooms: 3,
+    numberOfBathrooms: 3,
+    address: 'Road 11, Banani',
+    city: 'Dhaka',
+    locationLat: 23.7937,
+    locationLong: 90.4043,
+    ownerId: 3,
+    amenities: ['Lake View', 'Turnkey Furnished', 'Gym & Sauna', 'Housekeeping Included', '24/7 Front Desk Concierge'],
+    images: [
+      'https://images.unsplash.com/photo-1502005229762-ee1b2da97c0f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80'
+    ]
   }
 ];
 
