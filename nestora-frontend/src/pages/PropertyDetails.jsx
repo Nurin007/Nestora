@@ -269,15 +269,15 @@ export default function PropertyDetails({ user, properties, bookings, setBooking
   };
 
   return (
-    <div className="container animate-fade-in" style={{ paddingBottom: '100px' }}>
+    <div className="container animate-fade-in" style={{ paddingTop: '8px', paddingBottom: '100px' }}>
       
       {/* Back button */}
-      <button onClick={() => navigate(-1)} className="btn btn-secondary" style={{ marginBottom: '24px' }}>
-        <ArrowLeft size={16} /> Back
+      <button onClick={() => navigate(-1)} className="btn btn-secondary" style={{ marginBottom: '14px', padding: '6px 14px', fontSize: '0.85rem' }}>
+        <ArrowLeft size={15} /> Back
       </button>
 
       {/* Main Grid: Images & Details */}
-      <div className="property-details-layout" style={{ alignItems: 'start' }}>
+      <div className="property-details-layout" style={{ alignItems: 'start', marginTop: '0px' }}>
         
         {/* Left Side: Media Gallery, Desc, Map, Reviews */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
