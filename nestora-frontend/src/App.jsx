@@ -330,6 +330,29 @@ const INITIAL_PROPERTIES = [
       'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80'
     ]
+  },
+  {
+    id: 15,
+    title: 'Suburban Gated Community Family Estate',
+    description: 'Picturesque American-style suburban family neighborhood and townhouses inspired by top franchise master developments. Offers manicured front lawns, wide tree-lined paved avenues, community club, kids playground, and round-the-clock patrol.',
+    propertyType: 'RESIDENTIAL',
+    status: 'AVAILABLE',
+    verificationStatus: 'APPROVED',
+    pricing: 38500000,
+    areaSize: 3800,
+    numberOfBedrooms: 4,
+    numberOfBathrooms: 4,
+    address: 'Purbachal Sector 21',
+    city: 'Dhaka',
+    locationLat: 23.8340,
+    locationLong: 90.5210,
+    ownerId: 2,
+    amenities: ['Front Lawn Garden', 'Tree-Lined Avenues', 'Gated Community Patrol', 'Clubhouse & Gym', 'Solar Street Lighting'],
+    images: [
+      'https://lexpress-franchise.com/wp-content/uploads/2026/02/dillon-kydd-2kecpb73aqy-unsplash-1168x779.jpg',
+      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80'
+    ]
   }
 ];
 
