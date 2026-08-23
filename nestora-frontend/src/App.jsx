@@ -439,7 +439,16 @@ const INITIAL_PAYMENTS = [
 export default function App() {
   const [properties, setProperties] = useState(() => {
     const saved = localStorage.getItem('nestora_properties');
-    return saved ? JSON.parse(saved) : INITIAL_PROPERTIES;
+    if (!saved) return INITIAL_PROPERTIES;
+    try {
+      const parsed = JSON.parse(saved);
+      // Merge initial properties if new IDs exist
+      const existingIds = new Set(parsed.map(p => p.id));
+      const newProps = INITIAL_PROPERTIES.filter(p => !existingIds.has(p.id));
+      return [...newProps, ...parsed];
+    } catch {
+      return INITIAL_PROPERTIES;
+    }
   });
 
   const [user, setUser] = useState(() => {
