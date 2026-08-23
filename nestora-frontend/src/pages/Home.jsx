@@ -180,8 +180,12 @@ export default function Home({ properties, wishlist, onToggleWishlist, compareLi
                 {/* Image & Badges */}
                 <div style={{ position: 'relative', height: '220px', overflow: 'hidden' }}>
                   <img 
-                    src={p.images[0]} 
+                    src={p.images && p.images[0] ? p.images[0] : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'} 
                     alt={p.title}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80';
+                    }}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
                     onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
                     onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
@@ -353,8 +357,12 @@ export default function Home({ properties, wishlist, onToggleWishlist, compareLi
                 {/* Image & Badges */}
                 <div style={{ position: 'relative', height: '220px', overflow: 'hidden' }}>
                   <img 
-                    src={p.images[0]} 
+                    src={p.images && p.images[0] ? p.images[0] : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80'} 
                     alt={p.title}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80';
+                    }}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s' }}
                     onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.08)'}
                     onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}

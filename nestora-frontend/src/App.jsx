@@ -326,7 +326,7 @@ const INITIAL_PROPERTIES = [
     ownerId: 3,
     amenities: ['Lake View', 'Turnkey Furnished', 'Gym & Sauna', 'Housekeeping Included', '24/7 Front Desk Concierge'],
     images: [
-      'https://images.unsplash.com/photo-1502005229762-ee1b2da97c0f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
       'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80'
     ]
