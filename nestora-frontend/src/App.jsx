@@ -435,14 +435,15 @@ export default function App() {
     localStorage.setItem('nestora_saved_searches', JSON.stringify(savedSearches));
   }, [savedSearches]);
 
-  const triggerNotification = (userId, title, content) => {
+  const triggerNotification = (userId, title, content, meta = {}) => {
     const newNotif = {
       id: Date.now() + Math.floor(Math.random() * 1000),
       userId,
       title,
       content,
       isRead: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      meta
     };
     setNotifications(prev => [newNotif, ...prev]);
   };
@@ -475,13 +476,15 @@ export default function App() {
       triggerNotification(
         1,
         '🎉 New User Registration Alert',
-        `New account registered: ${userData.fullName} as ${userData.role} (${userData.email}).`
+        `New account registered: ${userData.fullName} as ${userData.role} (${userData.email}).`,
+        { userName: userData.fullName, userEmail: userData.email, userRole: userData.role, eventType: 'REGISTER' }
       );
       // 2. Notify new user
       triggerNotification(
         userData.id,
         'Welcome to Nestora!',
-        `Your account has been created successfully as a ${userData.role}. Explore properties or list yours!`
+        `Your account has been created successfully as a ${userData.role}. Explore properties or list yours!`,
+        { userName: userData.fullName, userEmail: userData.email, userRole: userData.role, eventType: 'WELCOME' }
       );
       // 3. Audit log
       setAuditLogs(prev => [
@@ -501,13 +504,15 @@ export default function App() {
       triggerNotification(
         1,
         '🔔 User Login Alert',
-        `User ${userData.fullName} (${userData.role}) just signed in to Nestora at ${loginTime}.`
+        `User ${userData.fullName} (${userData.role}) just signed in to Nestora at ${loginTime}.`,
+        { userName: userData.fullName, userEmail: userData.email, userRole: userData.role, eventType: 'LOGIN' }
       );
       // 2. Notify user for account security
       triggerNotification(
         userData.id,
         '🔐 Security Alert: Successful Login',
-        `You signed in successfully to Nestora at ${loginTime}.`
+        `You signed in successfully to Nestora at ${loginTime}.`,
+        { userName: userData.fullName, userEmail: userData.email, userRole: userData.role, eventType: 'SELF_LOGIN' }
       );
       // 3. Audit log
       setAuditLogs(prev => [
@@ -530,7 +535,8 @@ export default function App() {
       triggerNotification(
         1,
         '🚪 User Logout Notice',
-        `User ${user.fullName} (${user.role}) logged out.`
+        `User ${user.fullName} (${user.role}) logged out.`,
+        { userName: user.fullName, userEmail: user.email, userRole: user.role, eventType: 'LOGOUT' }
       );
     }
     setUser(null);

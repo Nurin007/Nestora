@@ -331,26 +331,72 @@ export default function Navbar({ user, onLogout, notifications = [], setNotifica
                       <p style={{ color: '#64748b', fontSize: '0.82rem', textAlign: 'center', padding: '20px 0' }}>No notifications found</p>
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        {myNotifications.map(n => (
-                          <div 
-                            key={n.id} 
-                            style={{
-                              padding: '12px',
-                              borderRadius: '10px',
-                              background: n.isRead ? '#f8fafc' : '#fffbeb',
-                              border: n.isRead ? '1px solid #e2e8f0' : '1px solid #fde68a',
-                              textAlign: 'left',
-                              boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-                            }}
-                          >
-                            <h5 style={{ margin: '0 0 4px 0', fontSize: '0.85rem', fontWeight: 700, color: n.isRead ? '#475569' : '#92400e' }}>
-                              {n.title}
-                            </h5>
-                            <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b', lineHeight: '1.45' }}>
-                              {n.content}
-                            </p>
-                          </div>
-                        ))}
+                        {myNotifications.map(n => {
+                          const timeDiff = Math.floor((Date.now() - new Date(n.createdAt).getTime()) / 60000);
+                          const timeAgo = timeDiff < 1 ? 'just now' : timeDiff < 60 ? `${timeDiff}m ago` : timeDiff < 1440 ? `${Math.floor(timeDiff / 60)}h ago` : `${Math.floor(timeDiff / 1440)}d ago`;
+                          const hasMeta = n.meta && (n.meta.userName || n.meta.userEmail);
+                          const roleBadgeColor = n.meta?.userRole === 'ADMIN' ? '#dc2626' : n.meta?.userRole === 'PROPERTY_OWNER' ? '#7c3aed' : '#2563eb';
+                          return (
+                            <div 
+                              key={n.id} 
+                              style={{
+                                padding: '12px',
+                                borderRadius: '10px',
+                                background: n.isRead ? '#f8fafc' : '#fffbeb',
+                                border: n.isRead ? '1px solid #e2e8f0' : '1px solid #fde68a',
+                                textAlign: 'left',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                              }}
+                            >
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                <h5 style={{ margin: '0 0 4px 0', fontSize: '0.85rem', fontWeight: 700, color: n.isRead ? '#475569' : '#92400e' }}>
+                                  {n.title}
+                                </h5>
+                                <span style={{ fontSize: '0.65rem', color: '#94a3b8', whiteSpace: 'nowrap', marginLeft: '8px', marginTop: '2px' }}>{timeAgo}</span>
+                              </div>
+                              {hasMeta && (
+                                <div style={{ 
+                                  background: 'linear-gradient(135deg, #f0f9ff, #f8fafc)', 
+                                  border: '1px solid #e2e8f0', 
+                                  borderRadius: '8px', 
+                                  padding: '8px 10px', 
+                                  margin: '6px 0',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '4px'
+                                }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{ fontSize: '0.8rem' }}>👤</span>
+                                    <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#0f172a' }}>{n.meta.userName}</span>
+                                    {n.meta.userRole && (
+                                      <span style={{ 
+                                        fontSize: '0.6rem', 
+                                        fontWeight: 700, 
+                                        color: '#fff', 
+                                        background: roleBadgeColor, 
+                                        padding: '1px 6px', 
+                                        borderRadius: '4px',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.5px'
+                                      }}>
+                                        {n.meta.userRole === 'PROPERTY_OWNER' ? 'OWNER' : n.meta.userRole}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {n.meta.userEmail && (
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <span style={{ fontSize: '0.8rem' }}>📧</span>
+                                      <span style={{ fontSize: '0.72rem', color: '#475569', fontFamily: 'monospace' }}>{n.meta.userEmail}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b', lineHeight: '1.45' }}>
+                                {n.content}
+                              </p>
+                            </div>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
